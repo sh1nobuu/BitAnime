@@ -10,8 +10,10 @@ from bs4 import BeautifulSoup
 from colorama import Fore
 
 colorama.init(autoreset=True)
-ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
-
+try:
+    ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
+except(AttributeError):
+    pass
 
 def bitanime():
     again = True
@@ -86,7 +88,12 @@ def bitanime():
             thread_map(
                 bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
             )
-            os.startfile(folder)
+            try:
+                os.startfile(folder)
+            except(AttributeError):
+                import sys, subprocess
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, folder])
 
         else:
             # Episode 0 does not exist
@@ -101,7 +108,13 @@ def bitanime():
             thread_map(
                 bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
             )
-            os.startfile(folder)
+            try:
+                os.startfile(folder)
+            except(AttributeError):
+                import sys, subprocess
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, folder])
+
         use_again = input("Do you want to download other anime? (y|n) >> ").lower()
         if use_again == "y":
             again = True
