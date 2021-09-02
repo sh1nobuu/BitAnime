@@ -12,8 +12,9 @@ from colorama import Fore
 colorama.init(autoreset=True)
 try:
     ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
-except(AttributeError):
+except (AttributeError):
     pass
+
 
 def bitanime():
     again = True
@@ -90,8 +91,9 @@ def bitanime():
             )
             try:
                 os.startfile(folder)
-            except(AttributeError):
+            except (AttributeError):
                 import sys, subprocess
+
                 opener = "open" if sys.platform == "darwin" else "xdg-open"
                 subprocess.call([opener, folder])
 
@@ -110,8 +112,9 @@ def bitanime():
             )
             try:
                 os.startfile(folder)
-            except(AttributeError):
+            except (AttributeError):
                 import sys, subprocess
+
                 opener = "open" if sys.platform == "darwin" else "xdg-open"
                 subprocess.call([opener, folder])
 
