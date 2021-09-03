@@ -5,6 +5,7 @@ import ctypes
 import os
 import backend as bd
 import colorama
+import concurrent.futures
 from tqdm.contrib.concurrent import thread_map
 from bs4 import BeautifulSoup
 from colorama import Fore
@@ -56,7 +57,7 @@ def bitanime():
     """
         soup = BeautifulSoup(resp.content, "html.parser")
         episode_number = soup.find("ul", {"id": "episode_page"})
-        episode_number = episode_number.get_text().split("-")[1].strip()
+        episode_number = episode_number.get_text().split("-")[-1].strip()
         """
     Print the anime name, episode, and the link of the anime
     """
@@ -79,43 +80,56 @@ def bitanime():
         episode_zero = soup.find("h1", {"class": "entry-title"})
         if episode_zero is None:
             # Episode 0 does exist
+            exec = concurrent.futures.ThreadPoolExecutor()
             episode_links = bd.get_links(name, episode_number, source)
-            download_links = bd.get_download_links(episode_links)
-            download_urls = bd.get_download_urls(download_links, True)
+            download_links = list(exec.map(bd.get_download_links, episode_links))
+            download_urls = list(exec.map(bd.get_download_urls, download_links))
+            conv_download_urls = {
+                episode_title: url for episode_title, url in enumerate(download_urls)
+            }
+            download_urls = sorted(set(conv_download_urls.items()))
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}====================================")
-            bd.get_path(folder)
-            thread_map(
-                bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
-            )
-            try:
-                os.startfile(folder)
-            except (AttributeError):
-                import sys, subprocess
+            print(download_urls)
+            print(len(download_urls))
+            # bd.get_path(folder)
+            # thread_map(
+            #     bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
+            # )
+            # try:
+            #     os.startfile(folder)
+            # except (AttributeError):
+            #     import sys, subprocess
 
-                opener = "open" if sys.platform == "darwin" else "xdg-open"
-                subprocess.call([opener, folder])
+            #     opener = "open" if sys.platform == "darwin" else "xdg-open"
+            #     subprocess.call([opener, folder])
 
         else:
             # Episode 0 does not exist
+            exec = concurrent.futures.ThreadPoolExecutor()
             episode_links = bd.get_links(name, episode_number)
-            download_links = bd.get_download_links(episode_links)
-            download_urls = bd.get_download_urls(download_links, False)
-            print(
-                f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
-            )
+            download_links = list(exec.map(bd.get_download_links, episode_links))
+            download_urls = list(exec.map(bd.get_download_urls, download_links))
+            conv_download_urls = {
+                episode_title + 1: url
+                for episode_title, url in enumerate(download_urls)
+            }
+            download_urls = sorted(set(conv_download_urls.items()))
+            print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}====================================")
-            bd.get_path(folder)
-            thread_map(
-                bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
-            )
-            try:
-                os.startfile(folder)
-            except (AttributeError):
-                import sys, subprocess
+            print(download_urls)
+            print(len(download_urls))
+            # bd.get_path(folder)
+            # thread_map(
+            #     bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
+            # )
+            # try:
+            #     os.startfile(folder)
+            # except (AttributeError):
+            #     import sys, subprocess
 
-                opener = "open" if sys.platform == "darwin" else "xdg-open"
-                subprocess.call([opener, folder])
+            #     opener = "open" if sys.platform == "darwin" else "xdg-open"
+            #     subprocess.call([opener, folder])
 
         use_again = input("Do you want to download other anime? (y|n) >> ").lower()
         if use_again == "y":

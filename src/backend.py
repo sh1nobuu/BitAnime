@@ -22,36 +22,18 @@ def get_links(name, episode_number, source=None):
     return episode_links
 
 
-def get_download_links(episode_links):
-    download_links = []
-    for episode_link in episode_links:
-        episode_link_resp = requests.get(episode_link)
-        soup = BeautifulSoup(episode_link_resp.content, "html.parser")
-        links = soup.find("li", {"class": "dowloads"})
-        for link in links:
-            link = link.get("href")
-            download_links.append(link)
-    return download_links
+def get_download_links(episode_link):
+    episode_link_resp = requests.get(episode_link, stream=True)
+    soup = BeautifulSoup(episode_link_resp.content, "html.parser")
+    link = soup.find("li", {"class": "dowloads"})
+    return link.a.get("href")
 
 
-def get_download_urls(download_links, bool):
-    download_urls = []
-    for link in download_links:
-        link = requests.get(link)
-        soup = BeautifulSoup(link.content, "html.parser")
-        download_link = soup.find_all("div", {"class": "dowload"})
-        download_urls.append(download_link[0].a.get("href"))
-        if bool:
-            conv_download_urls = {
-                episode_title: url for episode_title, url in enumerate(download_urls)
-            }
-        else:
-            conv_download_urls = {
-                episode_title + 1: url
-                for episode_title, url in enumerate(download_urls)
-            }
-        conv_download_urls = sorted(set(conv_download_urls.items()))
-    return conv_download_urls
+def get_download_urls(download_link):
+    link = requests.get(download_link, stream=True)
+    soup = BeautifulSoup(link.content, "html.parser")
+    link = soup.find_all("div", {"class": "dowload"})
+    return link[0].a.get("href")
 
 
 def download_episodes(url):
