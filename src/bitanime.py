@@ -84,7 +84,6 @@ def bitanime():
             download_urls = bd.get_download_urls(download_links, True)
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}====================================")
-            print(download_urls)
             bd.get_path(folder)
             thread_map(
                 bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
