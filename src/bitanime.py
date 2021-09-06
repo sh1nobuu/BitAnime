@@ -81,55 +81,44 @@ def bitanime():
         if episode_zero is None:
             # Episode 0 does exist
             exec = concurrent.futures.ThreadPoolExecutor()
-            episode_links = bd.get_links(name, episode_number, source)
+            episode_links = bd.get_links(name, episode_number)
             download_links = list(exec.map(bd.get_download_links, episode_links))
-            download_urls = list(exec.map(bd.get_download_urls, download_links))
-            conv_download_urls = {
-                episode_title: url for episode_title, url in enumerate(download_urls)
-            }
-            download_urls = sorted(set(conv_download_urls.items()))
+            filtered_download_links = [download_link for download_link in download_links if download_link]
+            download_urls = list(exec.map(bd.get_download_urls, filtered_download_links))
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}====================================")
-            print(download_urls)
-            print(len(download_urls))
-            # bd.get_path(folder)
-            # thread_map(
-            #     bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
-            # )
-            # try:
-            #     os.startfile(folder)
-            # except (AttributeError):
-            #     import sys, subprocess
+            bd.get_path(folder)
+            thread_map(
+                bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
+            )
+            try:
+                os.startfile(folder)
+            except (AttributeError):
+                import sys, subprocess
 
-            #     opener = "open" if sys.platform == "darwin" else "xdg-open"
-            #     subprocess.call([opener, folder])
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, folder])
 
         else:
             # Episode 0 does not exist
             exec = concurrent.futures.ThreadPoolExecutor()
             episode_links = bd.get_links(name, episode_number)
             download_links = list(exec.map(bd.get_download_links, episode_links))
-            download_urls = list(exec.map(bd.get_download_urls, download_links))
-            conv_download_urls = {
-                episode_title + 1: url
-                for episode_title, url in enumerate(download_urls)
-            }
-            download_urls = sorted(set(conv_download_urls.items()))
+            filtered_download_links = [download_link for download_link in download_links if download_link]
+            download_urls = list(exec.map(bd.get_download_urls, filtered_download_links))
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}====================================")
-            print(download_urls)
-            print(len(download_urls))
-            # bd.get_path(folder)
-            # thread_map(
-            #     bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
-            # )
-            # try:
-            #     os.startfile(folder)
-            # except (AttributeError):
-            #     import sys, subprocess
+            bd.get_path(folder)
+            thread_map(
+                bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
+            )
+            try:
+                os.startfile(folder)
+            except (AttributeError):
+                import sys, subprocess
 
-            #     opener = "open" if sys.platform == "darwin" else "xdg-open"
-            #     subprocess.call([opener, folder])
+                opener = "open" if sys.platform == "darwin" else "xdg-open"
+                subprocess.call([opener, folder])
 
         use_again = input("Do you want to download other anime? (y|n) >> ").lower()
         if use_again == "y":

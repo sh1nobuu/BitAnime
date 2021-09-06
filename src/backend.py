@@ -25,9 +25,23 @@ def get_links(name, episode_number, source=None):
 def get_download_links(episode_link):
     episode_link_resp = requests.get(episode_link, stream=True)
     soup = BeautifulSoup(episode_link_resp.content, "html.parser")
-    link = soup.find("li", {"class": "dowloads"})
-    return link.a.get("href")
-
+    exist = soup.find("h1", {"class": "entry-title"})
+    if exist is None:
+        # 202
+        link = soup.find("li", {"class": "dowloads"})
+        return link.a.get("href")
+    else:
+        # 404
+        episode_link = f"{episode_link}-"
+        episode_link_resp = requests.get(episode_link, stream=True)
+        soup = BeautifulSoup(episode_link_resp.content, "html.parser")
+        exist = soup.find("h1", {"class": "entry-title"})
+        if exist is None:
+            link = soup.find("li", {"class": "dowloads"})
+            return link.a.get("href")
+        else:
+            pass
+            
 
 def get_download_urls(download_link):
     link = requests.get(download_link, stream=True)
@@ -44,7 +58,8 @@ def download_episodes(url):
         "Accept-Encoding": "gzip, deflate",
         "Connection": "close",
     }
-    url_resp = requests.get(url[1], headers=header, stream=True)
-    file_name = os.path.join(folder_path, f"{url[0]}.mp4")
+    url_resp = requests.get(url, headers=header, stream=True)
+    episode_name = f"{url.split('-')[-2]}.mp4"
+    file_name = os.path.join(folder_path, episode_name)
     with open(file_name, "wb") as file:
         shutil.copyfileobj(url_resp.raw, file)
