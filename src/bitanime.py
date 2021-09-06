@@ -45,7 +45,7 @@ def bitanime():
             source = f"https://gogoanime.pe/category/{name}"
             resp = requests.get(source)
             if resp.status_code == 200:
-                print(f"{Fore.LIGHTGREEN_EX}====================================")
+                print(f"{Fore.LIGHTGREEN_EX}===========================================")
                 check = False
             else:
                 print(
@@ -64,7 +64,7 @@ def bitanime():
         print(f"Title: {Fore.LIGHTCYAN_EX}{title}")
         print(f"Episode/s: {Fore.LIGHTCYAN_EX}{episode_number}")
         print(f"Link: {Fore.LIGHTCYAN_EX}{source}")
-        print(f"{Fore.LIGHTGREEN_EX}====================================")
+        print(f"{Fore.LIGHTGREEN_EX}===========================================")
         """
     Create a download folder for the anime
     """
@@ -86,7 +86,7 @@ def bitanime():
             filtered_download_links = [download_link for download_link in download_links if download_link]
             download_urls = list(exec.map(bd.get_download_urls, filtered_download_links))
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
-            print(f"{Fore.LIGHTGREEN_EX}====================================")
+            print(f"{Fore.LIGHTGREEN_EX}===========================================")
             bd.get_path(folder)
             thread_map(
                 bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
@@ -107,7 +107,7 @@ def bitanime():
             filtered_download_links = [download_link for download_link in download_links if download_link]
             download_urls = list(exec.map(bd.get_download_urls, filtered_download_links))
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
-            print(f"{Fore.LIGHTGREEN_EX}====================================")
+            print(f"{Fore.LIGHTGREEN_EX}===========================================")
             bd.get_path(folder)
             thread_map(
                 bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
