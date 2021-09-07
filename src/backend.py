@@ -23,7 +23,7 @@ def get_links(name, episode_number, source=None):
 
 
 def get_download_links(episode_link):
-    episode_link_resp = requests.get(episode_link, stream=True)
+    episode_link_resp = requests.get(episode_link)
     soup = BeautifulSoup(episode_link_resp.content, "html.parser")
     exist = soup.find("h1", {"class": "entry-title"})
     if exist is None:
@@ -33,7 +33,7 @@ def get_download_links(episode_link):
     else:
         # 404
         episode_link = f"{episode_link}-"
-        episode_link_resp = requests.get(episode_link, stream=True)
+        episode_link_resp = requests.get(episode_link)
         soup = BeautifulSoup(episode_link_resp.content, "html.parser")
         exist = soup.find("h1", {"class": "entry-title"})
         if exist is None:
@@ -41,10 +41,10 @@ def get_download_links(episode_link):
             return link.a.get("href")
         else:
             pass
-            
+
 
 def get_download_urls(download_link):
-    link = requests.get(download_link, stream=True)
+    link = requests.get(download_link)
     soup = BeautifulSoup(link.content, "html.parser")
     link = soup.find_all("div", {"class": "dowload"})
     return link[0].a.get("href")
