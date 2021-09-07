@@ -27,7 +27,7 @@ def get_download_links(episode_link):
     soup = BeautifulSoup(episode_link_resp.content, "html.parser")
     exist = soup.find("h1", {"class": "entry-title"})
     if exist is None:
-        # 202
+        # 200
         link = soup.find("li", {"class": "dowloads"})
         return link.a.get("href")
     else:
