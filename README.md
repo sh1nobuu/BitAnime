@@ -27,7 +27,7 @@ git clone https://github.com/sh1nobuu/BitAnime.git
 <div align="center">
   <img src="https://i.postimg.cc/bwBxCdNh/ba-screenshot-updated.png"
   title="BitAnime in action" alt="BitAnime Screenshot">
-  <img src="https://i.postimg.cc/G2qGDpfV/downloade.png" title="Katekyo Hitman Reborn" alt="Downloaded anime with BitAnime">
+  <img style="height:386px; width:688px;" src="https://i.postimg.cc/G2qGDpfV/downloade.png" title="Katekyo Hitman Reborn" alt="Downloaded anime with BitAnime">
 </div>
 
 ## Dependencies
