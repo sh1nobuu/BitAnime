@@ -1,5 +1,7 @@
 # Dependencies
 
+# DYNAMIC EPISODE QUALITY - WIP
+
 import requests
 import ctypes
 import os
@@ -37,7 +39,7 @@ def bitanime():
     """
         check = True
         while check:
-            name = input(f"Enter anime name >> ").lower()
+            name = input("Enter anime name >> ").lower()
             if "-" in name:
                 title = name.replace("-", " ").title().strip()
             else:
@@ -45,12 +47,34 @@ def bitanime():
             source = f"https://gogoanime.pe/category/{name}"
             resp = requests.get(source)
             if resp.status_code == 200:
-                print(f"{Fore.LIGHTGREEN_EX}===========================================")
+                print(
+                    f"{Fore.LIGHTGREEN_EX}==========================================="
+                )
                 check = False
             else:
                 print(
                     f"{Fore.LIGHTRED_EX}Error 404: Anime not found. Please try again."
                 )
+                check = True
+        check = True
+        while check:
+            quality = input("Enter episode quality >> ")
+            episode_quality = ""
+            if quality == "1" or quality == "":
+                episode_quality = "360P"
+                quality = "1"
+                check = False
+            elif quality == "2":
+                episode_quality = "480P"
+                check = False
+            elif quality == "3":
+                episode_quality = "720P"
+                check = False
+            elif quality == "4":
+                episode_quality = "1080P"
+                check = False
+            else:
+                print(f"{Fore.LIGHTRED_EX}Invalid input. Please try again.")
                 check = True
         """
     Get how many episode/s the anime has
@@ -63,6 +87,7 @@ def bitanime():
     """
         print(f"Title: {Fore.LIGHTCYAN_EX}{title}")
         print(f"Episode/s: {Fore.LIGHTCYAN_EX}{episode_number}")
+        print(f"Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
         print(f"Link: {Fore.LIGHTCYAN_EX}{source}")
         print(f"{Fore.LIGHTGREEN_EX}===========================================")
         """
@@ -83,8 +108,14 @@ def bitanime():
             exec = concurrent.futures.ThreadPoolExecutor()
             episode_links = bd.get_links(name, episode_number)
             download_links = list(exec.map(bd.get_download_links, episode_links))
-            filtered_download_links = [download_link for download_link in download_links if download_link]
-            download_urls = list(exec.map(bd.get_download_urls, filtered_download_links))
+            filtered_download_links = [
+                [quality, download_link]
+                for download_link in download_links
+                if download_link
+            ]
+            download_urls = list(
+                exec.map(bd.get_download_urls, filtered_download_links)
+            )
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}===========================================")
             bd.get_path(folder)
@@ -104,8 +135,14 @@ def bitanime():
             exec = concurrent.futures.ThreadPoolExecutor()
             episode_links = bd.get_links(name, episode_number)
             download_links = list(exec.map(bd.get_download_links, episode_links))
-            filtered_download_links = [download_link for download_link in download_links if download_link]
-            download_urls = list(exec.map(bd.get_download_urls, filtered_download_links))
+            filtered_download_links = [
+                [quality, download_link]
+                for download_link in download_links
+                if download_link
+            ]
+            download_urls = list(
+                exec.map(bd.get_download_urls, filtered_download_links)
+            )
             print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
             print(f"{Fore.LIGHTGREEN_EX}===========================================")
             bd.get_path(folder)
