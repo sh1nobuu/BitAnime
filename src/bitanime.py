@@ -1,8 +1,4 @@
-# Dependencies
-
-# DYNAMIC EPISODE QUALITY - WIP
-
-import requests
+import requests as req
 import ctypes
 import os
 import backend as bd
@@ -20,8 +16,7 @@ except (AttributeError):
 
 
 def bitanime():
-    again = True
-    while again:
+    while True:
         print(
             f""" {Fore.LIGHTBLUE_EX}
                    ____  _ _      _          _
@@ -34,135 +29,132 @@ def bitanime():
                   Github: https://github.com/sh1nobuu/BitAnime
     """
         )
-        """
-    Ask user for input and then check if the anime provided exists or if not, loop
-    """
-        check = True
-        while check:
-            name = input("Enter anime name >> ").lower()
+        while True:
+            name = input(f"[{Fore.GREEN}+{Fore.RESET}] Enter anime name > ").lower()
             if "-" in name:
                 title = name.replace("-", " ").title().strip()
             else:
                 title = name.title().strip()
             source = f"https://gogoanime.pe/category/{name}"
-            resp = requests.get(source)
-            if resp.status_code == 200:
-                print(
-                    f"{Fore.LIGHTGREEN_EX}==========================================="
-                )
-                check = False
-            else:
-                print(
-                    f"{Fore.LIGHTRED_EX}Error 404: Anime not found. Please try again."
-                )
-                check = True
-        check = True
-        while check:
-            quality = input("Enter episode quality >> ")
-            episode_quality = ""
+            with req.get(source) as res:
+                if res.status_code == 200:
+                    soup = BeautifulSoup(res.content, "html.parser")
+                    episode_number = soup.find("ul", {"id": "episode_page"})
+                    episode_number = episode_number.get_text().split("-")[-1].strip()
+                    break
+                else:
+                    print(
+                        f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Error 404: Anime not found. Please try again."
+                    )
+        while True:
+            quality = input(
+                f"[{Fore.GREEN}+{Fore.RESET}] Enter episode quality (1.SD/360P|2.HD/720P|3.FULLHD/1080P) > "
+            )
             if quality == "1" or quality == "":
-                episode_quality = "360P"
-                quality = "1"
-                check = False
+                episode_quality = "SDP"
+                break
             elif quality == "2":
-                episode_quality = "480P"
-                check = False
+                episode_quality = "HDP"
+                break
             elif quality == "3":
-                episode_quality = "720P"
-                check = False
-            elif quality == "4":
-                episode_quality = "1080P"
-                check = False
+                episode_quality = "FullHDP"
+                break
             else:
-                print(f"{Fore.LIGHTRED_EX}Invalid input. Please try again.")
-                check = True
-        """
-    Get how many episode/s the anime has
-    """
-        soup = BeautifulSoup(resp.content, "html.parser")
-        episode_number = soup.find("ul", {"id": "episode_page"})
-        episode_number = episode_number.get_text().split("-")[-1].strip()
-        """
-    Print the anime name, episode, and the link of the anime
-    """
-        print(f"Title: {Fore.LIGHTCYAN_EX}{title}")
-        print(f"Episode/s: {Fore.LIGHTCYAN_EX}{episode_number}")
-        print(f"Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
-        print(f"Link: {Fore.LIGHTCYAN_EX}{source}")
-        print(f"{Fore.LIGHTGREEN_EX}===========================================")
-        """
-    Create a download folder for the anime
-    """
+                print(
+                    f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Invalid input. Please try again."
+                )
+        print(f"[{Fore.GREEN}+{Fore.RESET}] Title: {Fore.LIGHTCYAN_EX}{title}")
+        print(
+            f"[{Fore.GREEN}+{Fore.RESET}] Episode/s: {Fore.LIGHTCYAN_EX}{episode_number}"
+        )
+        print(
+            f"[{Fore.GREEN}+{Fore.RESET}] Quality: {Fore.LIGHTCYAN_EX}{episode_quality}"
+        )
+        print(f"[{Fore.GREEN}+{Fore.RESET}] Link: {Fore.LIGHTCYAN_EX}{source}")
         folder = os.path.join(os.getcwd(), title)
         if not os.path.exists(folder):
             os.mkdir(folder)
-        """
-    Check if the anime has episode 0 or not
-    """
+        while True:
+            choice = input(
+                f"[{Fore.GREEN}+{Fore.RESET}] Do you want to download all episode? (y/n) > "
+            )
+            if choice in ["y", "n"]:
+                break
+            else:
+                print(
+                    f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Invalid input. Please try again."
+                )
+        if choice == "n":
+            while True:
+                try:
+                    custom_episode_number = int(
+                        input(
+                            f"[{Fore.GREEN}+{Fore.RESET}] How many episode do you want to download? > "
+                        )
+                    )
+                    if custom_episode_number == 0 or custom_episode_number > int(
+                        episode_number
+                    ):
+                        raise bd.InvalidInputValue
+                    else:
+                        episode_number = custom_episode_number
+                        break
+                except ValueError:
+                    print(
+                        f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Invalid input. Please try again."
+                    )
+                except bd.InvalidInputValue:
+                    print(
+                        f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Custom episode cannot be equal to 0 or custom episode cannot be greater than {episode_number}"
+                    )
+        download = bd.Download(name, episode_quality, int(episode_number), folder)
         source = f"https://gogoanime.pe/{name}"
-        resp = requests.get(source)
-        soup = BeautifulSoup(resp.content, "html.parser")
-        episode_zero = soup.find("h1", {"class": "entry-title"})
+        with req.get(source) as res:
+            soup = BeautifulSoup(res.content, "html.parser")
+            episode_zero = soup.find("h1", {"class": "entry-title"})
         if episode_zero is None:
-            # Episode 0 does exist
-            exec = concurrent.futures.ThreadPoolExecutor()
-            episode_links = bd.get_links(name, episode_number)
-            download_links = list(exec.map(bd.get_download_links, episode_links))
-            filtered_download_links = [
-                [quality, download_link]
-                for download_link in download_links
-                if download_link
-            ]
-            download_urls = list(
-                exec.map(bd.get_download_urls, filtered_download_links)
-            )
-            print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
-            print(f"{Fore.LIGHTGREEN_EX}===========================================")
-            bd.get_path(folder)
-            thread_map(
-                bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
-            )
-            try:
-                os.startfile(folder)
-            except (AttributeError):
-                import sys, subprocess
-
-                opener = "open" if sys.platform == "darwin" else "xdg-open"
-                subprocess.call([opener, folder])
-
+            # Episode 0 == 200
+            with concurrent.futures.ThreadPoolExecutor() as exec:
+                episode_links = download.get_links(source)
+                download_links = list(
+                    exec.map(download.get_download_links, episode_links)
+                )
+                download_urls = list(
+                    exec.map(download.get_download_urls, download_links)
+                )
         else:
-            # Episode 0 does not exist
-            exec = concurrent.futures.ThreadPoolExecutor()
-            episode_links = bd.get_links(name, episode_number)
-            download_links = list(exec.map(bd.get_download_links, episode_links))
-            filtered_download_links = [
-                [quality, download_link]
-                for download_link in download_links
-                if download_link
-            ]
-            download_urls = list(
-                exec.map(bd.get_download_urls, filtered_download_links)
-            )
-            print(f"Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)} episode/s")
-            print(f"{Fore.LIGHTGREEN_EX}===========================================")
-            bd.get_path(folder)
-            thread_map(
-                bd.download_episodes, download_urls, ncols=75, total=len(download_urls)
-            )
-            try:
-                os.startfile(folder)
-            except (AttributeError):
-                import sys, subprocess
+            # Episode 0 == 404
+            with concurrent.futures.ThreadPoolExecutor() as exec:
+                episode_links = download.get_links()
+                download_links = list(
+                    exec.map(download.get_download_links, episode_links)
+                )
+                download_urls = list(
+                    exec.map(download.get_download_urls, download_links)
+                )
+        print(
+            f"[{Fore.GREEN}+{Fore.RESET}] Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
+        )
+        thread_map(
+            download.download_episodes,
+            download_urls,
+            ncols=75,
+            total=len(download_urls),
+        )
+        try:
+            os.startfile(folder)
+        except (AttributeError):
+            import sys, subprocess
 
-                opener = "open" if sys.platform == "darwin" else "xdg-open"
-                subprocess.call([opener, folder])
-
-        use_again = input("Do you want to download other anime? (y|n) >> ").lower()
+            opener = "open" if sys.platform == "darwin" else "xdg-open"
+            subprocess.call([opener, folder])
+        use_again = input(
+            f"[{Fore.GREEN}+{Fore.RESET}] Do you want to use the app again? (y|n) > "
+        ).lower()
         if use_again == "y":
-            again = True
             os.system("cls")
         else:
-            again = False
+            break
 
 
 if __name__ == "__main__":
