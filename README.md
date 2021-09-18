@@ -14,7 +14,7 @@
 
 ## About BitAnime
 
-**BitAnime** is a python script that allows you to download anime in large batches. It can also be used to download anime films. **BitAnime** gets its content from [gogoanime](https://gogoanime.pe/). If you get a **404** error, please look up the correct anime name on [gogoanime](https://gogoanime.pe/). This application will download all episodes. At the moment, the quality of the episodes that will be downloaded is different for every anime. For **older anime**, the quality will be **360p** to **480p**, for **newer anime** the quality will be **720p** to **1080p**.
+**BitAnime** is a python script that allows you to download anime in large batches. It can also be used to download anime films. **BitAnime** gets its content from [gogoanime](https://gogoanime.pe/). If you get a **404** error, please look up the correct anime name on [gogoanime](https://gogoanime.pe/). The application will let you download all the episodes, or you can choose how many episodes you want to download.
 
 ## Installation
 
@@ -25,7 +25,7 @@ git clone https://github.com/sh1nobuu/BitAnime.git
 ## Screenshot
 
 <div align="center">
-  <img src="https://i.postimg.cc/bwBxCdNh/ba-screenshot-updated.png"
+  <img style="height:386px; width:688px;" src="https://i.postimg.cc/cLgf8994/ba-screenshot.png"
   title="BitAnime in action" alt="BitAnime Screenshot">
   <img style="height:386px; width:688px;" src="https://i.postimg.cc/G2qGDpfV/downloade.png" title="Katekyo Hitman Reborn" alt="Downloaded anime with BitAnime">
 </div>
