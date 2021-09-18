@@ -105,7 +105,7 @@ def bitanime():
                     )
                 except bd.InvalidInputValue:
                     print(
-                        f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Custom episode cannot be equal to 0 or custom episode cannot be greater than {episode_number}"
+                        f"[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTRED_EX}Custom episode cannot be equal to 0 or it cannot be greater than {episode_number}"
                     )
         download = bd.Download(name, episode_quality, int(episode_number), folder)
         source = f"https://gogoanime.pe/{name}"
