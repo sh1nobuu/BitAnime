@@ -11,24 +11,34 @@ from dataclasses import dataclass
 class Download:
     name: str
     episode_quality: str
-    episode_number: int
     folder: str
+    all_episodes: int
+    episode_start: int
+    episode_end: int
 
-    def get_links(self, source=None):
+    # def __post_init__(self):
+    #     if self.episode_start == None:
+    #         self.episode_start = 1
+    #     if self.episode_end == None:
+    #         self.episode_end = self.all_episodes
+
+    def get_links(self, source=None) -> list[str]:
         if source != None:
             source_ep = f"https://gogoanime.pe/{self.name}-episode-"
             episode_links = [
-                f"{source_ep}{i}" for i in range(1, self.episode_number + 1)
+                f"{source_ep}{i}"
+                for i in range(self.episode_start, self.episode_end + 1)
             ]
             episode_links.insert(0, source)
         else:
             source_ep = f"https://gogoanime.pe/{self.name}-episode-"
             episode_links = [
-                f"{source_ep}{i}" for i in range(1, self.episode_number + 1)
+                f"{source_ep}{i}"
+                for i in range(self.episode_start, self.episode_end + 1)
             ]
         return episode_links
 
-    def get_download_links(self, episode_link):
+    def get_download_links(self, episode_link) -> list[str]:
         with req.get(episode_link) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             exist = soup.find("h1", {"class": "entry-title"})
@@ -48,7 +58,7 @@ class Download:
                     else:
                         return None
 
-    def get_download_urls(self, download_link):
+    def get_download_urls(self, download_link) -> list[str]:
         with req.get(download_link) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             link = soup.find("div", {"class": "mirror_link"}).find(
@@ -62,7 +72,7 @@ class Download:
                 )
         return [download_link.split("+")[-1], link.a.get("href")]
 
-    def download_episodes(self, url):
+    def download_episodes(self, url) -> object:
         header = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -77,7 +87,11 @@ class Download:
                 shutil.copyfileobj(res.raw, file, 8192)
 
 
-class InvalidInputValue(Exception):
-    """Raise when custom_episode_number is equal to 0 or custom_episode_number is greater than episode_number"""
+@dataclass(init=True)
+class CustomError(Exception):
+    """Custom exception that will accept message as a parameter and it will print it on the console."""
 
-    pass
+    message: str
+
+    def print_error(self) -> str:
+        print(self.message)
