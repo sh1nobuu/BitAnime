@@ -16,12 +16,6 @@ class Download:
     episode_start: int
     episode_end: int
 
-    # def __post_init__(self):
-    #     if self.episode_start == None:
-    #         self.episode_start = 1
-    #     if self.episode_end == None:
-    #         self.episode_end = self.all_episodes
-
     def get_links(self, source=None) -> list[str]:
         if source != None:
             source_ep = f"https://gogoanime.pe/{self.name}-episode-"
