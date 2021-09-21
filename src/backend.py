@@ -16,8 +16,8 @@ class Download:
     episode_start: int
     episode_end: int
 
-    def get_links(self, source=None) -> list[str]:
-        if source != None:
+    def get_links(self, source) -> list[str]:
+        if source is not None:
             source_ep = f"https://gogoanime.pe/{self.name}-episode-"
             episode_links = [
                 f"{source_ep}{i}"
@@ -60,10 +60,11 @@ class Download:
                 text=re.compile(fr"\b{self.episode_quality}\b"),
                 attrs={"class": "dowload"},
             )
-            if link == None:
+            if link is None:
                 link = soup.find("div", {"class": "mirror_link"}).find(
                     "div", {"class": "dowload"}
                 )
+        # episode_name: int, episode_link: str
         return [download_link.split("+")[-1], link.a.get("href")]
 
     def download_episodes(self, url) -> object:
