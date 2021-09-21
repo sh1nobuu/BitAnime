@@ -106,8 +106,8 @@ def bitanime():
                 except ValueError:
                     print(f"{MINUS}Invalid input. Please try again.")
 
-        episode_start = episode_start if episode_start != None else 1
-        episode_end = episode_end if episode_end != None else all_episodes
+        episode_start = episode_start if episode_start is not None else 1
+        episode_end = episode_end if episode_end is not None else all_episodes
 
         download = Download(
             name, episode_quality, folder, all_episodes, episode_start, episode_end
