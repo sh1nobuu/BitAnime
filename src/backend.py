@@ -16,7 +16,7 @@ class Download:
     episode_start: int
     episode_end: int
 
-    def get_links(self, source) -> list[str]:
+    def get_links(self, source=None) -> list[str]:
         if source is not None:
             source_ep = f"https://gogoanime.pe/{self.name}-episode-"
             episode_links = [
