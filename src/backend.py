@@ -3,7 +3,6 @@ import requests as req
 import shutil
 import re
 import os
-import colorama
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from colorama import Fore
