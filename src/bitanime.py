@@ -47,6 +47,12 @@ def bitanime():
                     break
                 else:
                     print(f"{ERR}Error 404: Anime not found. Please try again.")
+
+        while True:
+            server = input(f"{IN}Choose a server > ")
+            if server:
+                break
+
         while True:
             quality = input(
                 f"{IN}Enter episode quality (1.SD/360P|2.HD/720P|3.FULLHD/1080P) > "
@@ -62,11 +68,12 @@ def bitanime():
                 break
             else:
                 print(f"{ERR}Invalid input. Please try again.")
+
         print(f"{OK}Title: {Fore.LIGHTCYAN_EX}{title}")
         print(f"{OK}Episode/s: {Fore.LIGHTCYAN_EX}{all_episodes}")
         print(f"{OK}Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
         print(f"{OK}Link: {Fore.LIGHTCYAN_EX}{source}")
-        
+
         folder = os.path.join(os.getcwd(), title)
         if not os.path.exists(folder):
             os.mkdir(folder)
