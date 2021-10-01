@@ -66,6 +66,7 @@ def bitanime():
         print(f"{OK}Episode/s: {Fore.LIGHTCYAN_EX}{all_episodes}")
         print(f"{OK}Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
         print(f"{OK}Link: {Fore.LIGHTCYAN_EX}{source}")
+        
         folder = os.path.join(os.getcwd(), title)
         if not os.path.exists(folder):
             os.mkdir(folder)
