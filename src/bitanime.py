@@ -8,10 +8,9 @@ from tqdm.contrib.concurrent import thread_map
 from bs4 import BeautifulSoup
 from colorama import Fore
 
-colorama.init(autoreset=True)
-OK = f"[{Fore.GREEN}+{Fore.RESET}] "
-ERR = f"[{Fore.RED}-{Fore.RESET}] "
-IN = f"[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
+OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
+ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
+IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
 try:
     ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
 except (AttributeError):
@@ -19,6 +18,7 @@ except (AttributeError):
 
 
 def bitanime():
+    os.system("cls")
     while True:
         print(
             f""" {Fore.LIGHTBLUE_EX}
