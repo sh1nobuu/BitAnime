@@ -100,11 +100,45 @@ class Download:
 
     def download_episodes(self, url):
         client = req.session()
-        with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-            episode_name = "EP." + url[0] + ".mp4"
-            file_loc = os.path.join(self.folder, episode_name)
-            with open(file_loc, "w+b") as file:
-                shutil.copyfileobj(workingurl.raw, file, 8192)
+        while True:
+            with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+                episode_name = "EP." + url[0] + ".mp4"
+                file_loc = os.path.join(self.folder, episode_name)
+                with open(file_loc, "w+b") as file:
+                    shutil.copyfileobj(workingurl.raw, file)
+
+            size = os.stat(file_loc).st_size
+            if int(size) < 5:
+                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+                    episode_name = "EP." + url[0] + ".mp4"
+                    file_loc = os.path.join(self.folder, episode_name)
+                    with open(file_loc, "w+b") as file:
+                        shutil.copyfileobj(workingurl.raw, file)
+
+            size = os.stat(file_loc).st_size
+            if int(size) < 5:
+                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+                    episode_name = "EP." + url[0] + ".mp4"
+                    file_loc = os.path.join(self.folder, episode_name)
+                    with open(file_loc, "w+b") as file:
+                        shutil.copyfileobj(workingurl.raw, file)
+
+            size = os.stat(file_loc).st_size
+            if int(size) < 5:
+                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+                    episode_name = "EP." + url[0] + ".mp4"
+                    file_loc = os.path.join(self.folder, episode_name)
+                    with open(file_loc, "w+b") as file:
+                        shutil.copyfileobj(workingurl.raw, file)
+
+            size = os.stat(file_loc).st_size
+            if int(size) < 5:
+                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+                    episode_name = "EP." + url[0] + ".mp4"
+                    file_loc = os.path.join(self.folder, episode_name)
+                    with open(file_loc, "w+b") as file:
+                        shutil.copyfileobj(workingurl.raw, file)
+            break
 
 
 @dataclass(init=True)
@@ -126,3 +160,4 @@ class CustomMessage(Exception):
         print(
             f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] Using {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} as a default quality."
         )
+
