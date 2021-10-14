@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from colorama import Fore
 from random import choice
+import time
 
 
 @dataclass(init=True)
@@ -63,6 +64,8 @@ class Download:
             episode_quality = "720P"
         elif episode_quality == "SDP":
             episode_quality = "360P"
+        else:
+            episode_quality = "1080P"
         with req.get(download_link) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
@@ -79,31 +82,31 @@ class Download:
         return [
             download_link.split("+")[-1],
             link.a.get("href"),
-        ]  # episode_name: str, episode_link: str
+        ]
 
     def random_headers(self):
-        desktop_agents = ['Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
-                         'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
-                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
-                         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14',
-                         'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
-                         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36',
-                         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36',
-                         'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
-                         'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
-                         'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0']
+        desktop_agents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.47",
+                         'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
+                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+                         'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+                         'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+                         'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+                         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36']
         return {'User-Agent': choice(desktop_agents), "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
             "Accept-Encoding": "gzip, deflate, br",
-            "Referer" : "https://goload.one/",
+            "Referer": "https://goload.one/",
             "Connection": "keep-alive"}
 
     def download_episodes(self, url):
-        with req.get(url[1], headers=self.random_headers(), stream=True) as workingurl:
-            episode_name = f"EP.{url[0]}.mp4"
+        client = req.session()
+        with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+            time.sleep(1)
+            episode_name = "EP." + url[0] + ".mp4"
             file_loc = os.path.join(self.folder, episode_name)
-            with open(file_loc, "wb") as file:
-                shutil.copyfileobj(workingurl.raw, file, 8192)
+            with open(file_loc, "w+b") as file:
+                shutil.copyfileobj(workingurl.raw, file)
 
 
 @dataclass(init=True)
@@ -118,10 +121,10 @@ class CustomMessage(Exception):
 
     def qual_not_found(self):
         print(
-            f"[{Fore.RESET}{Fore.RED}-{Fore.RESET}] {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} quality not found."
+            f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} quality not found."
         )
 
     def use_default_qual(self):
         print(
-            f"[{Fore.RESET}{Fore.GREEN}+{Fore.RESET}] Using {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} as a default quality."
+            f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] Using {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} as a default quality."
         )
