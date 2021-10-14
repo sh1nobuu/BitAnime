@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from colorama import Fore
 from random import choice
-import time
 
 
 @dataclass(init=True)
@@ -102,11 +101,10 @@ class Download:
     def download_episodes(self, url):
         client = req.session()
         with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-            time.sleep(1)
             episode_name = "EP." + url[0] + ".mp4"
             file_loc = os.path.join(self.folder, episode_name)
             with open(file_loc, "w+b") as file:
-                shutil.copyfileobj(workingurl.raw, file)
+                shutil.copyfileobj(workingurl.raw, file, 8192)
 
 
 @dataclass(init=True)
