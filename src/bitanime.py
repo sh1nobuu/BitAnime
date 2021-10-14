@@ -1,19 +1,20 @@
 import requests as req
 import ctypes
 import os
-import colorama
 import concurrent.futures
 from backend import Download, CustomMessage
 from tqdm.contrib.concurrent import thread_map
 from bs4 import BeautifulSoup
 from colorama import Fore
+import sys
+import subprocess
 
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
 ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
 IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
 try:
     ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
-except (AttributeError):
+except AttributeError:
     pass
 
 
@@ -124,23 +125,16 @@ def bitanime():
             source = None
 
         episode_links = download.get_links(source)
-        with concurrent.futures.ThreadPoolExecutor() as exec:
-            download_links = list(exec.map(download.get_download_links, episode_links))
-            download_urls = list(exec.map(download.get_download_urls, download_links))
-        print(
-            f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
-        )
-        thread_map(
-            download.download_episodes,
-            download_urls,
-            ncols=75,
-            total=len(download_urls),
-        )
+        with concurrent.futures.ThreadPoolExecutor() as executing:
+            download_links = list(executing.map(download.get_download_links, episode_links))
+            download_urls = list(executing.map(download.get_download_urls, download_links))
+            
+        print(f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s")
+
+        thread_map(download.download_episodes, download_urls, ncols=75, total=len(download_urls))
         try:
             os.startfile(folder)
-        except (AttributeError):
-            import sys, subprocess
-
+        except AttributeError:
             opener = "open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, folder])
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
