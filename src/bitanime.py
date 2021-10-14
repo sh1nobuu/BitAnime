@@ -131,7 +131,13 @@ def bitanime():
             
         print(f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s")
 
-        thread_map(download.download_episodes, download_urls, ncols=75, total=len(download_urls))
+        thread_map(
+            download.download_episodes,
+            download_urls,
+            ncols=75,
+            total=len(download_urls),
+        )
+        
         try:
             os.startfile(folder)
         except AttributeError:
