@@ -7,9 +7,6 @@ from bs4 import BeautifulSoup
 from dataclasses import dataclass
 from colorama import Fore
 from random import choice
-import time
-
-
 
 @dataclass(init=True)
 class Download:
