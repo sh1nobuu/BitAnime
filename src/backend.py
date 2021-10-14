@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from colorama import Fore
 from random import choice
 
+
 @dataclass(init=True)
 class Download:
     name: str
@@ -45,8 +46,8 @@ class Download:
             else:
                 # Episode link == 404
                 episode_link = f"{episode_link}-"
-                with req.get(episode_link) as res:
-                    soup = BeautifulSoup(res.content, "html.parser")
+                with req.get(episode_link) as find:
+                    soup = BeautifulSoup(find.content, "html.parser")
                     exist = soup.find("h1", {"class": "entry-title"})
                     if exist is None:
                         episode_link = soup.find("li", {"class": "dowloads"})
@@ -64,16 +65,16 @@ class Download:
             episode_quality = "360P"
         with req.get(download_link) as res:
             soup = BeautifulSoup(res.content, "html.parser")
-            link = soup.find("div", {"class": "dowload"},text=re.compile(episode_quality))
+            link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
             if link is None:
                 episode_quality = "720P"
-                link = soup.find("div", {"class": "dowload"},text=re.compile(episode_quality))
+                link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
                 if link is None:
                     episode_quality = "360P"
-                    link = soup.find("div", {"class": "dowload"},text=re.compile(episode_quality))
-                    CustomMessage(None, self.episode_quality).qual_not_found()
+                    link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
+                    CustomMessage('None', self.episode_quality).qual_not_found()
                     self.episode_quality = link.text.split()[1][1:]
-                    CustomMessage(None, self.episode_quality).use_default_qual()
+                    CustomMessage('None', self.episode_quality).use_default_qual()
                     self.printed = True
         return [
             download_link.split("+")[-1],
@@ -91,18 +92,18 @@ class Download:
                          'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
                          'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36',
                          'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0']
-        return {'User-Agent': choice(desktop_agents),"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        return {'User-Agent': choice(desktop_agents), "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
             "Accept-Encoding": "gzip, deflate, br",
             "Referer" : "https://goload.one/",
             "Connection": "keep-alive"}
 
     def download_episodes(self, url):
-        with req.get(url[1], headers=self.random_headers(), stream=True) as res:
-                episode_name = f"EP.{url[0]}.mp4"
-                file_loc = os.path.join(self.folder, episode_name)
-                with open(file_loc, "wb") as file:
-                    shutil.copyfileobj(res.raw, file, 8192)
+        with req.get(url[1], headers=self.random_headers(), stream=True) as workingurl:
+            episode_name = f"EP.{url[0]}.mp4"
+            file_loc = os.path.join(self.folder, episode_name)
+            with open(file_loc, "wb") as file:
+                shutil.copyfileobj(workingurl.raw, file, 8192)
 
 
 @dataclass(init=True)
