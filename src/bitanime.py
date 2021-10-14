@@ -109,8 +109,14 @@ def bitanime():
                 except ValueError:
                     print(f"{ERR}Invalid input. Please try again.")
 
-        episode_start = episode_start if episode_start is not None else 1
-        episode_end = episode_end if episode_end is not None else all_episodes
+        if episode_start is not None:
+            pass
+        else:
+            episode_start = 1
+        if episode_end is not None:
+            pass
+        else:
+            episode_end = all_episodes
 
         download = Download(
             name, episode_quality, folder, all_episodes, episode_start, episode_end
@@ -125,19 +131,19 @@ def bitanime():
             source = None
 
         episode_links = download.get_links(source)
-        with concurrent.futures.ThreadPoolExecutor() as executing:
-            download_links = list(executing.map(download.get_download_links, episode_links))
-            download_urls = list(executing.map(download.get_download_urls, download_links))
-            
-        print(f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s")
-
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            download_links = list(executor.map(download.get_download_links, episode_links))
+            download_urls = list(executor.map(download.get_download_urls, download_links))
+        print(
+            f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
+        )
         thread_map(
             download.download_episodes,
             download_urls,
             ncols=75,
-            total=len(download_urls),
+            total=len(download_urls)
         )
-        
+
         try:
             os.startfile(folder)
         except AttributeError:
