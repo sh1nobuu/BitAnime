@@ -58,19 +58,31 @@ class Download:
     def get_download_urls(self, download_link):
         episode_quality = self.episode_quality
         if episode_quality == "FullHDP":
-            episode_quality = "1080P"
+            episode_quality = "1080P - mp4"
         elif episode_quality == "HDP":
-            episode_quality = "720P"
+            episode_quality = "720P - mp4"
         elif episode_quality == "SDP":
-            episode_quality = "360P"
+            episode_quality = "360P - mp4"
         else:
             episode_quality = "1080P"
         with req.get(download_link) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
             if link is None:
+                pass
+            else:
+                with req.get(link.a.get("href")) as checkingurl:
+                    if checkingurl.status_code == 200:
+                        link = None
+            if link is None:
                 episode_quality = "720P"
                 link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
+                if link is None:
+                    pass
+                else:
+                    with req.get(link.a.get("href")) as checkingurl:
+                        if checkingurl.status_code == 200:
+                            link = None
                 if link is None:
                     episode_quality = "360P"
                     link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
@@ -100,45 +112,11 @@ class Download:
 
     def download_episodes(self, url):
         client = req.session()
-        while True:
-            with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-                episode_name = "EP." + url[0] + ".mp4"
-                file_loc = os.path.join(self.folder, episode_name)
-                with open(file_loc, "w+b") as file:
-                    shutil.copyfileobj(workingurl.raw, file)
-
-            size = os.stat(file_loc).st_size
-            if int(size) < 5:
-                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-                    episode_name = "EP." + url[0] + ".mp4"
-                    file_loc = os.path.join(self.folder, episode_name)
-                    with open(file_loc, "w+b") as file:
-                        shutil.copyfileobj(workingurl.raw, file)
-
-            size = os.stat(file_loc).st_size
-            if int(size) < 5:
-                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-                    episode_name = "EP." + url[0] + ".mp4"
-                    file_loc = os.path.join(self.folder, episode_name)
-                    with open(file_loc, "w+b") as file:
-                        shutil.copyfileobj(workingurl.raw, file)
-
-            size = os.stat(file_loc).st_size
-            if int(size) < 5:
-                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-                    episode_name = "EP." + url[0] + ".mp4"
-                    file_loc = os.path.join(self.folder, episode_name)
-                    with open(file_loc, "w+b") as file:
-                        shutil.copyfileobj(workingurl.raw, file)
-
-            size = os.stat(file_loc).st_size
-            if int(size) < 5:
-                with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
-                    episode_name = "EP." + url[0] + ".mp4"
-                    file_loc = os.path.join(self.folder, episode_name)
-                    with open(file_loc, "w+b") as file:
-                        shutil.copyfileobj(workingurl.raw, file)
-            break
+        with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+            episode_name = "EP." + url[0] + ".mp4"
+            file_loc = os.path.join(self.folder, episode_name)
+            with open(file_loc, "w+b") as file:
+                shutil.copyfileobj(workingurl.raw, file, 8192)
 
 
 @dataclass(init=True)
@@ -160,4 +138,3 @@ class CustomMessage(Exception):
         print(
             f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] Using {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} as a default quality."
         )
-
