@@ -111,12 +111,11 @@ class Download:
             "Connection": "keep-alive"}
 
     def download_episodes(self, url):
-        client = req.session()
-        with client.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
+        with req.get(url[1], headers=self.random_headers(), stream=True, timeout=10) as workingurl:
             episode_name = "EP." + url[0] + ".mp4"
             file_loc = os.path.join(self.folder, episode_name)
             with open(file_loc, "w+b") as file:
-                shutil.copyfileobj(workingurl.raw, file, 8192)
+                shutil.copyfileobj(workingurl.raw, file)
 
 
 @dataclass(init=True)
