@@ -103,6 +103,8 @@ class Download:
                                  timeout=3) as workingit:
                         if workingit.status_code != 200:
                             link = None
+                        elif workingit.headers['Content-Type'] != 'video/mp4':
+                            link = None
                 except Timeout:
                     link = None
             if link is None:
@@ -122,6 +124,8 @@ class Download:
                         with req.get(link.a.get("href"), headers=random_headers(), stream=True,
                                      timeout=3) as workingit:
                             if workingit.status_code != 200:
+                                link = None
+                            elif workingit.headers['Content-Type'] != 'video/mp4':
                                 link = None
                     except Timeout:
                         link = None
