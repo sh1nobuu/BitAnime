@@ -2,7 +2,7 @@ import requests as req
 import ctypes
 import os
 import concurrent.futures
-from backend import Download, CustomMessage
+from backend import Download, CustomMessage, get_download_links
 from tqdm.contrib.concurrent import thread_map
 from bs4 import BeautifulSoup
 from colorama import Fore
@@ -132,7 +132,7 @@ def bitanime():
 
         episode_links = download.get_links(source)
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            download_links = list(executor.map(download.get_download_links, episode_links))
+            download_links = list(executor.map(get_download_links, episode_links))
             download_urls = list(executor.map(download.get_download_urls, download_links))
         print(
             f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
