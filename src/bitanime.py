@@ -149,6 +149,7 @@ def bitanime():
         except AttributeError:
             opener = "open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, folder])
+        print("\n")
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":
             os.system("cls")
