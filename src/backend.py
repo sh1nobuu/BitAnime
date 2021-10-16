@@ -9,10 +9,13 @@ from colorama import Fore
 from random import choice
 from requests.exceptions import Timeout
 import time
+from threading import Semaphore
 
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
 ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
 IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
+
+screenlock = Semaphore(value=1)
 
 
 def random_headers():
@@ -178,12 +181,18 @@ class CustomMessage(Exception):
     workingepisode: str = None
 
     def print_error(self):
+        screenlock.acquire()
         print(ERR, self.message, end=' ')
+        screenlock.release()
 
     def qual_not_found(self):
+        screenlock.acquire()
         print(
             f"{ERR}Episode {self.workingepisode} {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} quality not found.")
+        screenlock.release()
 
     def use_default_qual(self):
+        screenlock.acquire()
         print(
             f"{OK}Trying {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} quality for Episode {self.workingepisode}.")
+        screenlock.release()
