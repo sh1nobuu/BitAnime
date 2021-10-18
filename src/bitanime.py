@@ -50,15 +50,18 @@ def bitanime():
                     print(f"{ERR}Error 404: Anime not found. Please try again.")
         while True:
             quality = input(
-                f"{IN}Enter episode quality (1.SD/360P|2.HD/720P|3.FULLHD/1080P) > "
+                f"{IN}Enter episode quality (1.SD/360P|2.SD/480P|3.HD/720P|4.FULLHD/1080P) > "
             )
             if quality == "1" or quality == "":
                 episode_quality = "SDP"
                 break
             elif quality == "2":
-                episode_quality = "HDP"
+                episode_quality = "SHD"
                 break
             elif quality == "3":
+                episode_quality = "HDP"
+                break
+            elif quality == "4":
                 episode_quality = "FullHDP"
                 break
             else:
