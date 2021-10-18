@@ -91,6 +91,8 @@ class Download:
             episode_quality = "1080P - mp4"
         elif episode_quality == "HDP":
             episode_quality = "720P - mp4"
+        elif episode_quality == "SHD":
+            episode_quality = "480P - mp4"
         elif episode_quality == "SDP":
             episode_quality = "360P - mp4"
         else:
@@ -137,13 +139,35 @@ class Download:
                         episode_quality = "HDP"
                         time.sleep(1)
                         CustomMessage('None', episode_quality, workingepisode).qual_not_found()
-                        episode_quality = "SDP"
+                        episode_quality = "SHD"
                         time.sleep(1)
                         CustomMessage('None', episode_quality, workingepisode).use_default_qual()
-                        episode_quality = "360P - mp4"
+                        episode_quality = "480P - mp4"
                     link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
-                else:
-                    pass
+                    if link is None:
+                        pass
+                    else:
+                        try:
+                            with req.get(link.a.get("href"), headers=random_headers(), stream=True,
+                                         timeout=3) as workingit:
+                                if workingit.status_code != 200:
+                                    link = None
+                                elif workingit.headers['Content-Type'] != 'video/mp4':
+                                    link = None
+                        except Timeout:
+                            link = None
+                    if link is None:
+                        if episode_quality == "480P - mp4":
+                            episode_quality = "SHD"
+                            time.sleep(1)
+                            CustomMessage('None', episode_quality, workingepisode).qual_not_found()
+                            episode_quality = "SDP"
+                            time.sleep(1)
+                            CustomMessage('None', episode_quality, workingepisode).use_default_qual()
+                            episode_quality = "360P - mp4"
+                        link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
+                    else:
+                        pass
         return [download_link[1].split("+")[-1], link.a.get("href")]
 
     def download_episodes(self, url):
