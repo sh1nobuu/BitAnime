@@ -28,12 +28,13 @@ def random_headers():
         'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
         'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36']
-    return {'User-Agent': choice(desktop_agents),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    return { "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.5",
             "Accept-Encoding": "gzip, deflate, br",
-            "Referer": "https://goload.one/",
-            "Connection": "keep-alive"}
+            "Connection": "keep-alive",
+            "Referer": "https://gogoplay1.com/",
+            'User-Agent': choice(desktop_agents)}
+
 
 
 def get_download_links(episode_link):
@@ -97,7 +98,7 @@ class Download:
             episode_quality = "360P - mp4"
         else:
             episode_quality = "1080P - mp4"
-        with req.get(download_link[1]) as res:
+        with req.get(download_link[1], headers=random_headers(), timeout=3) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             link = soup.find("div", {"class": "dowload"}, text=re.compile(episode_quality))
             if link is None:
