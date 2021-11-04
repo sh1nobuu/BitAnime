@@ -19,7 +19,7 @@
 ## Installation
 
 ```console
-git clone https://github.com/sh1nobuu/BitAnime.git
+git clone https://github.com/Arctic4161/BitAnime.git
 ```
 
 ## Screenshot
