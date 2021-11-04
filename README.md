@@ -9,7 +9,7 @@
   <p>
     A Python script that allows you to download all of an anime's episodes at once.
   </p>
-  <a href="https://github.com/sh1nobuu/BitAnime/releases"> <strong>· Download executable version ·</strong></a>
+  <a href="https://github.com/Arctic4161/BitAnime/releases"> <strong>· Download executable version ·</strong></a>
 </div>
 
 ## About BitAnime
