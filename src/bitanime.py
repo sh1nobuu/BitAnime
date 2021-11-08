@@ -39,7 +39,7 @@ def bitanime():
                 title = name.replace("-", " ").title().strip()
             else:
                 title = name.title().strip()
-            source = f"https://gogoanime.pe/category/{name}"
+            source = f"https://gogoanime.wiki/category/{name}"
             with req.get(source) as res:
                 if res.status_code == 200:
                     soup = BeautifulSoup(res.content, "html.parser")
@@ -125,7 +125,7 @@ def bitanime():
             name, episode_quality, folder, all_episodes, episode_start, episode_end
         )
 
-        source = f"https://gogoanime.pe/{name}"
+        source = f"https://gogoanime.wiki/{name}"
         with req.get(source) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             episode_zero = soup.find("h1", {"class": "entry-title"})  # value: 404
