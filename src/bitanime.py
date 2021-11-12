@@ -1,24 +1,25 @@
 import requests as req
 import ctypes
 import os
-import colorama
 import concurrent.futures
-from backend import Download, CustomMessage
+from backend import Download, CustomMessage, get_download_links
 from tqdm.contrib.concurrent import thread_map
 from bs4 import BeautifulSoup
 from colorama import Fore
+import sys
+import subprocess
 
-colorama.init(autoreset=True)
-OK = f"[{Fore.GREEN}+{Fore.RESET}] "
-ERR = f"[{Fore.RED}-{Fore.RESET}] "
-IN = f"[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
+OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
+ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
+IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
 try:
     ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
-except (AttributeError):
+except AttributeError:
     pass
 
 
 def bitanime():
+    os.system("cls")
     while True:
         print(
             f""" {Fore.LIGHTBLUE_EX}
@@ -38,7 +39,7 @@ def bitanime():
                 title = name.replace("-", " ").title().strip()
             else:
                 title = name.title().strip()
-            source = f"https://gogoanime.pe/category/{name}"
+            source = f"https://gogoanime.wiki/category/{name}"
             with req.get(source) as res:
                 if res.status_code == 200:
                     soup = BeautifulSoup(res.content, "html.parser")
@@ -49,15 +50,18 @@ def bitanime():
                     print(f"{ERR}Error 404: Anime not found. Please try again.")
         while True:
             quality = input(
-                f"{IN}Enter episode quality (1.SD/360P|2.HD/720P|3.FULLHD/1080P) > "
+                f"{IN}Enter episode quality (1.SD/360P|2.SD/480P|3.HD/720P|4.FULLHD/1080P) > "
             )
             if quality == "1" or quality == "":
                 episode_quality = "SDP"
                 break
             elif quality == "2":
-                episode_quality = "HDP"
+                episode_quality = "SHD"
                 break
             elif quality == "3":
+                episode_quality = "HDP"
+                break
+            elif quality == "4":
                 episode_quality = "FullHDP"
                 break
             else:
@@ -108,14 +112,20 @@ def bitanime():
                 except ValueError:
                     print(f"{ERR}Invalid input. Please try again.")
 
-        episode_start = episode_start if episode_start is not None else 1
-        episode_end = episode_end if episode_end is not None else all_episodes
+        if episode_start is not None:
+            pass
+        else:
+            episode_start = 1
+        if episode_end is not None:
+            pass
+        else:
+            episode_end = all_episodes
 
         download = Download(
             name, episode_quality, folder, all_episodes, episode_start, episode_end
         )
 
-        source = f"https://gogoanime.pe/{name}"
+        source = f"https://gogoanime.wiki/{name}"
         with req.get(source) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             episode_zero = soup.find("h1", {"class": "entry-title"})  # value: 404
@@ -124,9 +134,9 @@ def bitanime():
             source = None
 
         episode_links = download.get_links(source)
-        with concurrent.futures.ThreadPoolExecutor() as exec:
-            download_links = list(exec.map(download.get_download_links, episode_links))
-            download_urls = list(exec.map(download.get_download_urls, download_links))
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            download_links = list(executor.map(get_download_links, episode_links))
+            download_urls = list(executor.map(download.get_download_urls, download_links))
         print(
             f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
         )
@@ -134,15 +144,15 @@ def bitanime():
             download.download_episodes,
             download_urls,
             ncols=75,
-            total=len(download_urls),
+            total=len(download_urls)
         )
+
         try:
             os.startfile(folder)
-        except (AttributeError):
-            import sys, subprocess
-
+        except AttributeError:
             opener = "open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, folder])
+        print("\n")
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":
             os.system("cls")
