@@ -20,14 +20,14 @@ class Download:
 
     def get_links(self, source=None) -> list[str]:
         if source is not None:
-            source_ep = f"https://gogoanime.pe/{self.name}-episode-"
+            source_ep = f"https://gogoanime.cm/{self.name}-episode-"
             episode_links = [
                 f"{source_ep}{i}"
                 for i in range(self.episode_start, self.episode_end + 1)
             ]
             episode_links.insert(0, source)
         else:
-            source_ep = f"https://gogoanime.pe/{self.name}-episode-"
+            source_ep = f"https://gogoanime.cm/{self.name}-episode-"
             episode_links = [
                 f"{source_ep}{i}"
                 for i in range(self.episode_start, self.episode_end + 1)
