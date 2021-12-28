@@ -12,7 +12,7 @@ from colorama import Fore
 from aiohttp import ClientSession
 from bs4 import BeautifulSoup
 from tqdm.contrib.concurrent import thread_map
-from bd import Download, CustomMessage, ServerStatus
+from backend import Download, CustomMessage, ServerStatus
 
 colorama.init(autoreset=True)
 

@@ -63,7 +63,6 @@ class Download:
         return download_urls
 
     def download_episodes(self, download_url: str) -> None:
-        print(download_url)
         header = {
             "Host": "gogo-cdn.com",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
@@ -139,8 +138,6 @@ class StreamSBServer:
                 download_link = url.format(
                     download_link[0], download_link[1], download_link[2]
                 )
-                #!DELETE THIS LATER
-                print(download_link)
                 async with session.get(download_link) as response:
                     soup = BeautifulSoup(await response.content.read(), "html.parser")
                     direct_link = soup.find("span").find("a").get("href")
@@ -242,8 +239,6 @@ class GogoTwoServer:
                 text=re.compile(fr"\b{self.episode_quality}\b"),
                 attrs={"class": "dowload"},
             )
-            #!DELETE THIS LATER
-            print(link.a.get("href"))
 
         return [
             download_link.split("+")[-1],
