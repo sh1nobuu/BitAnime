@@ -12,6 +12,7 @@ import subprocess
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
 ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
 IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
+CURRENT_DOMAIN = "film"
 try:
     ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
 except AttributeError:
@@ -39,7 +40,7 @@ def bitanime():
                 title = name.replace("-", " ").title().strip()
             else:
                 title = name.title().strip()
-            source = f"https://gogoanime.wiki/category/{name}"
+            source = f"https://gogoanime.{CURRENT_DOMAIN}/category/{name}"
             with req.get(source) as res:
                 if res.status_code == 200:
                     soup = BeautifulSoup(res.content, "html.parser")
@@ -70,7 +71,7 @@ def bitanime():
         print(f"{OK}Episode/s: {Fore.LIGHTCYAN_EX}{all_episodes}")
         print(f"{OK}Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
         print(f"{OK}Link: {Fore.LIGHTCYAN_EX}{source}")
-        
+
         folder = os.path.join(os.getcwd(), title)
         if not os.path.exists(folder):
             os.mkdir(folder)
@@ -125,7 +126,7 @@ def bitanime():
             name, episode_quality, folder, all_episodes, episode_start, episode_end
         )
 
-        source = f"https://gogoanime.wiki/{name}"
+        source = f"https://gogoanime.{CURRENT_DOMAIN}/{name}"
         with req.get(source) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             episode_zero = soup.find("h1", {"class": "entry-title"})  # value: 404
@@ -136,7 +137,9 @@ def bitanime():
         episode_links = download.get_links(source)
         with concurrent.futures.ThreadPoolExecutor() as executor:
             download_links = list(executor.map(get_download_links, episode_links))
-            download_urls = list(executor.map(download.get_download_urls, download_links))
+            download_urls = list(
+                executor.map(download.get_download_urls, download_links)
+            )
         print(
             f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
         )
@@ -144,7 +147,7 @@ def bitanime():
             download.download_episodes,
             download_urls,
             ncols=75,
-            total=len(download_urls)
+            total=len(download_urls),
         )
 
         try:
