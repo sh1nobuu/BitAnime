@@ -1,0 +1,4 @@
+venv/
+*.mp4
+config.json
+__pycache__/
