@@ -1,37 +1,40 @@
-import requests as req
+import requests
 import ctypes
 import os
-import concurrent.futures
-from backend import Download, CustomMessage, get_download_links
-from tqdm.contrib.concurrent import thread_map
+from backend import *
 from bs4 import BeautifulSoup
 from colorama import Fore
-import sys
-import subprocess
 
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
 ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
 IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
-CURRENT_DOMAIN = "film"
 try:
-    ctypes.windll.kernel32.SetConsoleTitleW("BitAnime")
+    ctypes.windll.kernel32.SetConsoleTitleW("GoGo Downloader")
 except AttributeError:
     pass
 
 
-def bitanime():
+def gogodownloader(config):
+    CURRENT_DOMAIN = config["CurrentGoGoAnimeDomain"]
     os.system("cls")
     while True:
         print(
             f""" {Fore.LIGHTBLUE_EX}
-                   ____  _ _      _          _
-                  | __ )(_) |_   / \   _ __ (_)_ __ ___   ___
-                  |  _ \| | __| / _ \ | '_ \| | '_ ` _ \ / _ \\
-                  | |_) | | |_ / ___ \| | | | | | | | | |  __/
-                  |____/|_|\__/_/   \_\_| |_|_|_| |_| |_|\___|
-                              {Fore.LIGHTYELLOW_EX}
-                                  By: sh1nobu
-                  Github: https://github.com/sh1nobuu/BitAnime
+
+             ______      ______                                      
+            / ____/___  / ____/___                                   
+           / / __/ __ \/ / __/ __ \                                  
+          / /_/ / /_/ / /_/ / /_/ /                                  
+          \__________/\____/\____/      __                __         
+             / __ \____ _      ______  / /___  ____ _____/ /__  _____
+            / / / / __ \ | /| / / __ \/ / __ \/ __ `/ __  / _ \/ ___/
+           / /_/ / /_/ / |/ |/ / / / / / /_/ / /_/ / /_/ /  __/ /    
+          /_____/\____/|__/|__/_/ /_/_/\____/\__,_/\__,_/\___/_/     
+    
+                              {Fore.RED}
+                                  By: Karl0ss
+                             Forked From: sh1nobuu
+                  Github: https://github.com/karl0ss/GoGoDownloader
     """
         )
         while True:
@@ -41,7 +44,7 @@ def bitanime():
             else:
                 title = name.title().strip()
             source = f"https://gogoanime.{CURRENT_DOMAIN}/category/{name}"
-            with req.get(source) as res:
+            with requests.get(source) as res:
                 if res.status_code == 200:
                     soup = BeautifulSoup(res.content, "html.parser")
                     all_episodes = soup.find("ul", {"id": "episode_page"})
@@ -54,16 +57,16 @@ def bitanime():
                 f"{IN}Enter episode quality (1.SD/360P|2.SD/480P|3.HD/720P|4.FULLHD/1080P) > "
             )
             if quality == "1" or quality == "":
-                episode_quality = "SDP"
+                episode_quality = "360"
                 break
             elif quality == "2":
-                episode_quality = "SHD"
+                episode_quality = "480"
                 break
             elif quality == "3":
-                episode_quality = "HDP"
+                episode_quality = "720"
                 break
             elif quality == "4":
-                episode_quality = "FullHDP"
+                episode_quality = "1080"
                 break
             else:
                 print(f"{ERR}Invalid input. Please try again.")
@@ -123,39 +126,31 @@ def bitanime():
             episode_end = all_episodes
 
         download = Download(
-            name, episode_quality, folder, all_episodes, episode_start, episode_end
+            name,
+            episode_quality,
+            folder,
+            all_episodes,
+            episode_start,
+            episode_end,
+            config,
         )
 
         source = f"https://gogoanime.{CURRENT_DOMAIN}/{name}"
-        with req.get(source) as res:
+        with requests.get(source) as res:
             soup = BeautifulSoup(res.content, "html.parser")
             episode_zero = soup.find("h1", {"class": "entry-title"})  # value: 404
 
         if choice == "n" or episode_zero is not None:
             source = None
 
+        dl_links = []
         episode_links = download.get_links(source)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            download_links = list(executor.map(get_download_links, episode_links))
-            download_urls = list(
-                executor.map(download.get_download_urls, download_links)
-            )
-        print(
-            f"{OK}Downloading {Fore.LIGHTCYAN_EX}{len(download_urls)}{Fore.RESET} episode/s"
-        )
-        thread_map(
-            download.download_episodes,
-            download_urls,
-            ncols=75,
-            total=len(download_urls),
-        )
 
-        try:
-            os.startfile(folder)
-        except AttributeError:
-            opener = "open" if sys.platform == "darwin" else "xdg-open"
-            subprocess.call([opener, folder])
-        print("\n")
+        for link in episode_links:
+            dl_links.append(get_download_link(config, link, episode_quality))
+
+        file_downloader(dl_links, title, config)
+
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":
             os.system("cls")
@@ -164,4 +159,5 @@ def bitanime():
 
 
 if __name__ == "__main__":
-    bitanime()
+    config = config_check()
+    gogodownloader(config)
