@@ -26,6 +26,7 @@ GoGo Anime has changed the way they show download links, and this no longer work
  - Download all qualities options from GoGoAnime
  - Update the current GoGoAnime domain via config file (as they keep changing it)
  - Specify the number of concurrent downloads via config file (Max is 6)
+ - Set file overwrite via config file (0 = Skip / 1 = Overwrite)
 
 ## Installation
 
