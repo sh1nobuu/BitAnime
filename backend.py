@@ -18,6 +18,11 @@ screenlock = Semaphore(value=1)
 
 
 def config_check():
+    """Check for config.json and check required keys are set
+
+    Returns:
+        [object]: Config object
+    """
     if os.path.exists("./config.json"):
         with open("./config.json", "r") as f:
             CONFIG = json.load(f)
@@ -29,6 +34,21 @@ def config_check():
     else:
         print("config.json file not found")
         exit(0)
+
+
+def max_concurrent_downloads(max_conn: int):
+    """Check max_concurrent_downloads value and restrict to below 6
+
+    Args:
+        max_conn (int): Max concurrent downloads to allow
+
+    Returns:
+        [int]: Max concurrent downloads allowed
+    """
+    if max_conn > 6:
+        return 6
+    else:
+        return max_conn
 
 
 CURRENT_DOMAIN = "film"
@@ -77,7 +97,7 @@ class Download:
 
     def file_downloader(self, file_list: dict):
         dl = Downloader(
-            max_conn=self.config["MaxConcurrentDownloads"],
+            max_conn=max_concurrent_downloads(self.config["MaxConcurrentDownloads"]),
             overwrite=self.config["OverwriteDownloads"],
             headers=dict(
                 [
