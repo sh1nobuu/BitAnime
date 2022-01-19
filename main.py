@@ -1,7 +1,7 @@
 import requests
 import ctypes
 import os
-from backend import *
+from backend import Download, CustomMessage, config_check
 from bs4 import BeautifulSoup
 from colorama import Fore
 
@@ -126,13 +126,14 @@ def gogodownloader(config):
             episode_end = all_episodes
 
         download = Download(
+            config,
             name,
             episode_quality,
             folder,
             all_episodes,
             episode_start,
             episode_end,
-            config,
+            title,
         )
 
         source = f"https://gogoanime.{CURRENT_DOMAIN}/{name}"
@@ -147,9 +148,9 @@ def gogodownloader(config):
         episode_links = download.get_links(source)
 
         for link in episode_links:
-            dl_links.append(get_download_link(config, link, episode_quality))
+            dl_links.append(download.get_download_link(link))
 
-        file_downloader(dl_links, title, config)
+        download.file_downloader(dl_links)
 
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":

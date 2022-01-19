@@ -36,13 +36,14 @@ CURRENT_DOMAIN = "film"
 
 @dataclass(init=True)
 class Download:
+    config: object
     name: str
     episode_quality: str
     folder: str
     all_episodes: int
     episode_start: int
     episode_end: int
-    config: object
+    title: str
     printed: bool = False
 
     def get_links(self, source=None):
@@ -61,45 +62,46 @@ class Download:
             ]
         return episode_links
 
+    def get_download_link(self, url):
 
-def get_download_link(config, url, episode_quality):
-
-    page = requests.get(
-        url,
-        cookies=dict(auth=config["GoGoAnimeAuthKey"]),
-    )
-
-    soup = BeautifulSoup(page.content, "html.parser")
-
-    for link in soup.find_all("a", href=True):
-        if episode_quality in link.text:
-            return link["href"]
-
-
-def file_downloader(file_list: dict, title: str, config: object):
-    dl = Downloader(
-        max_conn=config["MaxConcurrentDownloads"],
-        overwrite=False,
-        headers=dict(
-            [
-                (
-                    "User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
-                ),
-                ("authority", "gogo-cdn.com"),
-                ("referer", f"https://gogoanime.{config['CurrentGoGoAnimeDomain']}/"),
-            ]
-        ),
-    )
-
-    for link in file_list:
-        dl.enqueue_file(
-            link,
-            path=f"./{title}",
+        page = requests.get(
+            url,
+            cookies=dict(auth=self.config["GoGoAnimeAuthKey"]),
         )
 
-    files = dl.download()
-    return files
+        soup = BeautifulSoup(page.content, "html.parser")
+
+        for link in soup.find_all("a", href=True):
+            if self.episode_quality in link.text:
+                return link["href"]
+
+    def file_downloader(self, file_list: dict):
+        dl = Downloader(
+            max_conn=self.config["MaxConcurrentDownloads"],
+            overwrite=self.config["OverwriteDownloads"],
+            headers=dict(
+                [
+                    (
+                        "User-Agent",
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+                    ),
+                    ("authority", "gogo-cdn.com"),
+                    (
+                        "referer",
+                        f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/",
+                    ),
+                ]
+            ),
+        )
+
+        for link in file_list:
+            dl.enqueue_file(
+                link,
+                path=f"./{self.title}",
+            )
+
+        files = dl.download()
+        return files
 
 
 @dataclass(init=True)
