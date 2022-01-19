@@ -1,6 +1,6 @@
 <div align="center">
   <img
-    style="width: 140px; height: 140px"
+    style="width: 300px; height: 300px"
     src="https://github.com/karl0ss/GoGoDownloader/raw/master/img/gogo_logo.png"
     title="GoGoDownloader"
     alt="GoGoDownloader"
