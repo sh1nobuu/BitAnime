@@ -1,5 +1,6 @@
 {
-    "GoGoAnimeAuthKey": "",
+    "GoGoAnime_Username":"",
+    "GoGoAnime_Password":"",
     "MaxConcurrentDownloads": 4,
     "CurrentGoGoAnimeDomain": "film",
     "OverwriteDownloads": 0
