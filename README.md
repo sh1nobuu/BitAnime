@@ -30,10 +30,10 @@ GoGo Anime has changed the way they show download links, and this no longer work
 - Set file overwrite via config file (0 = Skip / 1 = Overwrite)
 
 ## Installation
-You have 2 options here, you can download the exe on the releases page and run using windows
+You have 2 options here, you can download the exe on the releases page and run on Windows
 
 - Download the zip
-- Extract and set your usernam and password in the config.json
+- Extract and set your GoGoAnime Username and Password in the config.json
 - Run the exe
 
 If you want to run from source, or are using Linux/Mac you can run directly from source doing the following - 
@@ -41,7 +41,7 @@ If you want to run from source, or are using Linux/Mac you can run directly from
 - `git clone https://github.com/karl0ss/GoGoDownloader.git`
 - `pip install -r requirements.txt`
 - Create config.json from config.json.default
-- Add your GoGoAnime username and password to config.json (Can't be a Google account)
+- Add your GoGoAnime Username and Password to config.json (Can't be a Google account)
 - Run the app with `python GoGoDownloader.py`
 
 ## Screenshot
