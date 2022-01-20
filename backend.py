@@ -26,11 +26,18 @@ def config_check():
     if os.path.exists("./config.json"):
         with open("./config.json", "r") as f:
             CONFIG = json.load(f)
-        if not "GoGoAnimeAuthKey" in CONFIG or len(CONFIG["GoGoAnimeAuthKey"]) == 0:
-            print("GoGoAnimeAuthKey not set in config.json")
+        if not "GoGoAnime_Username" in CONFIG or len(CONFIG["GoGoAnime_Username"]) == 0:
+            print("GoGoAnime_Username not set in config.json")
             exit(0)
         else:
-            return CONFIG
+            if (
+                not "GoGoAnime_Password" in CONFIG
+                or len(CONFIG["GoGoAnime_Password"]) == 0
+            ):
+                print("GoGoAnime_Password not set in config.json")
+                exit(0)
+            else:
+                return CONFIG
     else:
         print("config.json file not found")
         exit(0)
@@ -55,7 +62,7 @@ CURRENT_DOMAIN = "film"
 
 
 @dataclass(init=True)
-class Download:
+class gogoanime:
     config: object
     name: str
     episode_quality: str
@@ -65,6 +72,32 @@ class Download:
     episode_end: int
     title: str
     printed: bool = False
+
+    def get_gogoanime_auth_cookie(self):
+        session = requests.session()
+        page = session.get(
+            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/login.html"
+        )
+        soup = BeautifulSoup(page.content, "html.parser")
+        meta_path = soup.select('meta[name="csrf-token"]')
+        csrf_token = meta_path[0].attrs["content"]
+
+        url = f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/login.html"
+        payload = f"email={self.config['GoGoAnime_Username']}&password={self.config['GoGoAnime_Password']}&_csrf={csrf_token}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+            "authority": "gogo-cdn.com",
+            "referer": f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/",
+            "content-type": "application/x-www-form-urlencoded",
+        }
+        session.headers = headers
+
+        r = session.post(url, data=payload, headers=headers)
+
+        if r.status_code == 200:
+            return session.cookies.get_dict().get("auth")
+        else:
+            print("ldldl")
 
     def get_links(self, source=None):
         if source is not None:
@@ -83,10 +116,9 @@ class Download:
         return episode_links
 
     def get_download_link(self, url):
-
         page = requests.get(
             url,
-            cookies=dict(auth=self.config["GoGoAnimeAuthKey"]),
+            cookies=dict(auth=gogoanime.get_gogoanime_auth_cookie(self)),
         )
 
         soup = BeautifulSoup(page.content, "html.parser")
