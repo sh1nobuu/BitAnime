@@ -1,3 +1,4 @@
+import re
 import requests
 import json
 import os
@@ -120,17 +121,42 @@ class gogoanime:
             url,
             cookies=dict(auth=gogoanime.get_gogoanime_auth_cookie(self)),
         )
-
+        quality_arr = ["1080", "720", "640", "480"]
         soup = BeautifulSoup(page.content, "html.parser")
-
-        for link in soup.find_all("a", href=True):
-            if self.episode_quality in link.text:
+        try:
+            for link in soup.find_all(
+                "a", href=True, string=re.compile(self.episode_quality)
+            ):
                 return link["href"]
+            else:
+                ep_num = url.rsplit("-", 1)[1]
+                print(
+                    f"{self.episode_quality} not found for ep{ep_num} checking for next best"
+                )
+                for q in quality_arr:
+                    for link in soup.find_all("a", href=True, string=re.compile(q)):
+                        print(f"{q} found.")
+                        return link["href"]
+        except:
+            print("No matching download found")
 
-    def file_downloader(self, file_list: dict):
+    def file_downloader(self, file_list: dict, overwrite_downloads: bool = None):
+        """[summary]
+
+        Args:
+            file_list (dict): [description]
+            overwrite_downloads (bool, optional): [description]. Defaults to None.
+
+        Returns:
+            [type]: [description]
+        """
+        if overwrite_downloads is None:
+            overwrite = self.config["OverwriteDownloads"]
+        else:
+            overwrite = overwrite_downloads
         dl = Downloader(
             max_conn=max_concurrent_downloads(self.config["MaxConcurrentDownloads"]),
-            overwrite=self.config["OverwriteDownloads"],
+            overwrite=overwrite,
             headers=dict(
                 [
                     (
@@ -147,10 +173,11 @@ class gogoanime:
         )
 
         for link in file_list:
-            dl.enqueue_file(
-                link,
-                path=f"./{self.title}",
-            )
+            if link is not None:
+                dl.enqueue_file(
+                    link,
+                    path=f"./{self.title}",
+                )
 
         files = dl.download()
         return files
