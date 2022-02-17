@@ -146,11 +146,20 @@ def gogodownloader(config):
 
         dl_links = []
         episode_links = gogo.get_links(source)
-
+        print(f"{OK}Scraping Links")
         for link in episode_links:
             dl_links.append(gogo.get_download_link(link))
 
-        gogo.file_downloader(dl_links)
+        result = gogo.file_downloader(dl_links)
+        if len(result.errors) > 0:
+            while len(result.errors) > 0:
+                print(f"{ERR}{len(result.errors)} links failed retrying.")
+                episode_links = gogo.get_links(source)
+                print(f"{OK}Re-Scraping Links")
+                dl_links.clear()
+                for link in episode_links:
+                    dl_links.append(gogo.get_download_link(link))
+                result = gogo.file_downloader(dl_links, overwrite_downloads=0)
 
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":
