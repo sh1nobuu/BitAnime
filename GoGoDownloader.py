@@ -156,6 +156,7 @@ def gogodownloader(config):
                 print(f"{ERR}{len(result.errors)} links failed retrying.")
                 episode_links = gogo.get_links(source)
                 print(f"{OK}Re-Scraping Links")
+                dl_links.clear()
                 for link in episode_links:
                     dl_links.append(gogo.get_download_link(link))
                 result = gogo.file_downloader(dl_links, overwrite_downloads=0)
