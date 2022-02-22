@@ -7,6 +7,14 @@ from dataclasses import dataclass
 from colorama import Fore
 from parfive import Downloader
 from threading import Semaphore
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    filename="app.log",
+    filemode="w",
+    format="%(name)s - %(levelname)s - %(message)s",
+)
 
 
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
@@ -25,9 +33,11 @@ def config_check():
         [object]: Config object
     """
     if os.path.exists("./config.json"):
+        logging.info("Config.json loaded")
         with open("./config.json", "r") as f:
             CONFIG = json.load(f)
         if not "GoGoAnime_Username" in CONFIG or len(CONFIG["GoGoAnime_Username"]) == 0:
+            logging.error("GoGoAnime_Username not set in config.json")
             print("GoGoAnime_Username not set in config.json")
             exit(0)
         else:
@@ -35,11 +45,18 @@ def config_check():
                 not "GoGoAnime_Password" in CONFIG
                 or len(CONFIG["GoGoAnime_Password"]) == 0
             ):
+                logging.error("GoGoAnime_Password not set in config.json")
                 print("GoGoAnime_Password not set in config.json")
                 exit(0)
             else:
+                logging.info(
+                    "Config loaded and "
+                    + CONFIG["GoGoAnime_Username"]
+                    + " username found"
+                )
                 return CONFIG
     else:
+        logging.error("config.json not found")
         print("config.json file not found")
         exit(0)
 
@@ -99,6 +116,20 @@ class gogoanime:
             return session.cookies.get_dict().get("auth")
         else:
             print("ldldl")
+
+    def user_logged_in_check(
+        self,
+    ):
+        page = requests.get(
+            f"https://gogoanime.film/one-piece-episode-1",
+            cookies=dict(auth=gogoanime.get_gogoanime_auth_cookie(self)),
+        )
+        soup = BeautifulSoup(page.content, "html.parser")
+        loginCheck = soup(text=re.compile("Logout"))
+        if len(loginCheck) is 0:
+            raise Exception(
+                "User is not logged in, make sure account has been activated"
+            )
 
     def get_links(self, source=None):
         if source is not None:

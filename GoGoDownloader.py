@@ -4,6 +4,7 @@ import os
 from backend import gogoanime, CustomMessage, config_check
 from bs4 import BeautifulSoup
 from colorama import Fore
+import logging
 
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
 ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
@@ -39,6 +40,7 @@ def gogodownloader(config):
         )
         while True:
             name = input(f"{IN}Enter anime name > ").lower()
+            logging.info("episode searched for " + name)
             if "-" in name:
                 title = name.replace("-", " ").title().strip()
             else:
@@ -70,6 +72,7 @@ def gogodownloader(config):
                 break
             else:
                 print(f"{ERR}Invalid input. Please try again.")
+            logging.info("quality selected " + episode_quality)
         print(f"{OK}Title: {Fore.LIGHTCYAN_EX}{title}")
         print(f"{OK}Episode/s: {Fore.LIGHTCYAN_EX}{all_episodes}")
         print(f"{OK}Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
@@ -135,7 +138,7 @@ def gogodownloader(config):
             episode_end,
             title,
         )
-
+        gogo.user_logged_in_check()
         source = f"https://gogoanime.{CURRENT_DOMAIN}/{name}"
         with requests.get(source) as res:
             soup = BeautifulSoup(res.content, "html.parser")
