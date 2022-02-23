@@ -126,7 +126,7 @@ class gogoanime:
         )
         soup = BeautifulSoup(page.content, "html.parser")
         loginCheck = soup(text=re.compile("Logout"))
-        if len(loginCheck) is 0:
+        if len(loginCheck) == 0:
             raise Exception(
                 "User is not logged in, make sure account has been activated"
             )

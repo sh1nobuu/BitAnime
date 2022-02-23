@@ -17,7 +17,7 @@ except AttributeError:
 
 def gogodownloader(config):
     CURRENT_DOMAIN = config["CurrentGoGoAnimeDomain"]
-    os.system("cls")
+    os.system("cls" if os.name == "nt" else "clear")
     while True:
         print(
             f""" {Fore.LIGHTBLUE_EX}
@@ -166,7 +166,7 @@ def gogodownloader(config):
 
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":
-            os.system("cls")
+            os.system("cls" if os.name == "nt" else "clear")
         else:
             break
 
