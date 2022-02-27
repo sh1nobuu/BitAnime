@@ -50,7 +50,7 @@ def gogodownloader(config):
                 if res.status_code == 200:
                     soup = BeautifulSoup(res.content, "html.parser")
                     all_episodes = soup.find("ul", {"id": "episode_page"})
-                    all_episodes = int(all_episodes.get_text().split("-")[-1].strip())
+                    all_episodes = int(list(filter(None, "-".join(all_episodes.get_text().splitlines()).split("-")))[-1].strip())
                     break
                 else:
                     print(f"{ERR}Error 404: Anime not found. Please try again.")
