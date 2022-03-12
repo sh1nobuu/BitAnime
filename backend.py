@@ -121,7 +121,7 @@ class gogoanime:
         self,
     ):
         page = requests.get(
-            f"https://gogoanime.film/one-piece-episode-1",
+            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/one-piece-episode-1",
             cookies=dict(auth=gogoanime.get_gogoanime_auth_cookie(self)),
         )
         soup = BeautifulSoup(page.content, "html.parser")
