@@ -6,3 +6,4 @@ build/
 dist/
 main.spec
 .vscode/launch.json
+app.log
