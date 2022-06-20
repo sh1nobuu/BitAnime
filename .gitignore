@@ -5,3 +5,4 @@ __pycache__/
 build/
 dist/
 main.spec
+.vscode/launch.json
