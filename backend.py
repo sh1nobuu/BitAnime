@@ -233,8 +233,9 @@ class gogoanime:
             else:
                 fullRow = fullRow.replace("Status ", "")
                 splitRow = fullRow.split("Latest")
-            animeName = splitRow[0].strip()
-            animeDownloadName = animeName.replace(":", "").replace(" ", "-").lower()
+            animeName = splitRow[0].strip().encode("ascii", "ignore").decode()
+            animeName = re.sub("[^A-Za-z0-9 ]+", "", animeName)
+            animeDownloadName = animeName.replace(" ", "-").lower()
             episodeNum = splitRow[-1].split()[-1]
             bookmarkList.append(
                 {
