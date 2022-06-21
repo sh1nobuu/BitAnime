@@ -1,7 +1,24 @@
 from backend import *
+import json
+import io
+import os
+
+
+def loadDownloadHistory():
+    if os.path.isfile("./downloadHistory.json") and os.access(
+        "./downloadHistory.json", os.R_OK
+    ):
+        return json.load(open("./downloadHistory.json"))
+    else:
+        print("Either file is missing or is not readable, creating file...")
+        with io.open(os.path.join("./", "downloadHistory.json"), "w") as db_file:
+            db_file.write(json.dumps([]))
+        return json.load(open("./downloadHistory.json"))
 
 
 def main():
+    dh = loadDownloadHistory()
+
     config = config_check()
     downloader = gogoanime(
         config,
