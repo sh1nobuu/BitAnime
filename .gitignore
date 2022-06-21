@@ -8,3 +8,4 @@ main.spec
 .vscode/launch.json
 app.log
 bookmarkList.json
+downloadHistory.json
