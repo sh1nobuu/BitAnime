@@ -214,10 +214,11 @@ class gogoanime:
         return files
 
     def get_show_from_bookmark(self):
+        print(f"{IN}Loading shows from bookmarks")
         bookmarkList = []
         a = dict(auth=gogoanime.get_gogoanime_auth_cookie(self))
         resp = requests.get(
-            "https://gogoanime.gg/user/bookmark",
+            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/user/bookmark",
             cookies=a,
         )
         soup = BeautifulSoup(resp.text, "html.parser")
