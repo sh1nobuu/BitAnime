@@ -3,5 +3,8 @@
     "GoGoAnime_Password":"",
     "MaxConcurrentDownloads": 4,
     "CurrentGoGoAnimeDomain": "gg",
-    "OverwriteDownloads": 0
+    "OverwriteDownloads": 0,
+    "CLIQuality":"720",
+    "CLIDownloadLocation": "CLIOutput",
+    "CleanUpFileName": false
 }

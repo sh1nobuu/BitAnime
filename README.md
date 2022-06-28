@@ -57,16 +57,20 @@ If you want to run from source, or are using Linux/Mac you can run directly from
 
 ## Usage
 
-The anime name is separated by "-". You can either type it manually, or go to [gogoanime.film](https://gogoanime.film/) and search for the anime you want to download and copy the name from the URL.
+The anime name is separated by "-". You can either type it manually, or go to [gogoanime.gg](https://gogoanime.gg/) and search for the anime you want to download and copy the name from the URL.
 
 ### Examples
 
 ##### One word title
 
-- https://gogoanime.film/category/bakemonogatari >> bakemonogatari
-- https://gogoanime.film/category/steinsgate >> steinsgate
+- https://gogoanime.gg/category/bakemonogatari >> bakemonogatari
+- https://gogoanime.gg/category/steinsgate >> steinsgate
 
 ##### Multiple word title
 
-- https://gogoanime.film/category/shadows-house >> shadows-house
-- https://gogoanime.film/category/kono-subarashii-sekai-ni-shukufuku-wo- >> kono-subarashii-sekai-ni-shukufuku-wo-
+- https://gogoanime.gg/category/shadows-house >> shadows-house
+- https://gogoanime.gg/category/kono-subarashii-sekai-ni-shukufuku-wo- >> kono-subarashii-sekai-ni-shukufuku-wo-
+
+
+# GoGoDownloader CLI
+I have now also created the GoGoDownloader CLI, this tool can be used to run on a scheduled basis, it will login and get the latest episodes from your GoGoAnime bookmarks, and download the latest episode if it has not been downloaded yet.
