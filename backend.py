@@ -199,6 +199,42 @@ class gogoanime:
         files = dl.download()
         return files
 
+    def get_show_from_bookmark(self):
+        print(f"{IN}Loading shows from bookmarks")
+        bookmarkList = []
+        a = dict(auth=gogoanime.get_gogoanime_auth_cookie(self))
+        resp = requests.get(
+            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/user/bookmark",
+            cookies=a,
+        )
+        soup = BeautifulSoup(resp.text, "html.parser")
+        table = soup.find("div", attrs={"class": "article_bookmark"})
+        splitTableLines = table.text.split("Remove")
+        for rows in splitTableLines:
+            fullRow = " ".join(rows.split())
+            if "Anime name" in fullRow:
+                fullRow = fullRow.replace("Anime name Latest", "")
+                splitRow = fullRow.split("Latest")
+            elif fullRow == "Status":
+                break
+            else:
+                fullRow = fullRow.replace("Status ", "")
+                splitRow = fullRow.split("Latest")
+            animeName = splitRow[0].strip().encode("ascii", "ignore").decode()
+            animeName = re.sub("[^A-Za-z0-9 ]+", "", animeName)
+            animeDownloadName = animeName.replace(" ", "-").lower()
+            episodeNum = splitRow[-1].split()[-1]
+            bookmarkList.append(
+                {
+                    "showName": animeName,
+                    "latestEpisode": int(episodeNum),
+                    "downloadURL": f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/{animeDownloadName}-episode-{str(episodeNum)}",
+                }
+            )
+        with open("bookmarkList.json", "w") as f:
+            json.dump(bookmarkList, f)
+        return bookmarkList
+
 
 @dataclass(init=True)
 class CustomMessage(Exception):
