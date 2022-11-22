@@ -187,21 +187,7 @@ class gogoanime:
             overwrite = overwrite_downloads
         dl = Downloader(
             max_conn=max_concurrent_downloads(self.config["MaxConcurrentDownloads"]),
-            overwrite=overwrite,
-            headers=dict(
-                [
-                    (
-                        "User-Agent",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
-                    ),
-                    ("authority", "gogo-cdn.com"),
-                    (
-                        "referer",
-                        f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/",
-                    ),
-                ]
-            ),
-        )
+            overwrite=overwrite)
 
         for link in file_list:
             if link is not None:
