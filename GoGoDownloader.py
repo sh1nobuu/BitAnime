@@ -1,3 +1,4 @@
+import contextlib
 import requests
 import ctypes
 import os
@@ -9,13 +10,12 @@ import logging
 OK = f"{Fore.RESET}[{Fore.GREEN}+{Fore.RESET}] "
 ERR = f"{Fore.RESET}[{Fore.RED}-{Fore.RESET}] "
 IN = f"{Fore.RESET}[{Fore.LIGHTBLUE_EX}>{Fore.RESET}] "
-try:
+with contextlib.suppress(AttributeError):
     ctypes.windll.kernel32.SetConsoleTitleW("GoGo Downloader")
-except AttributeError:
-    pass
 
 
 def gogodownloader(config):
+    global episode_quality
     CURRENT_DOMAIN = config["CurrentGoGoAnimeDomain"]
     os.system("cls" if os.name == "nt" else "clear")
     while True:
@@ -40,7 +40,7 @@ def gogodownloader(config):
         )
         while True:
             name = input(f"{IN}Enter anime name > ").lower()
-            logging.info("episode searched for " + name)
+            logging.info(f"episode searched for {name}")
             if "-" in name:
                 title = name.replace("-", " ").title().strip()
             else:
@@ -58,7 +58,7 @@ def gogodownloader(config):
             quality = input(
                 f"{IN}Enter episode quality (1.SD/360P|2.SD/480P|3.HD/720P|4.FULLHD/1080P) > "
             )
-            if quality == "1" or quality == "":
+            if quality in ["1", ""]:
                 episode_quality = "360"
                 break
             elif quality == "2":
@@ -72,7 +72,7 @@ def gogodownloader(config):
                 break
             else:
                 print(f"{ERR}Invalid input. Please try again.")
-            logging.info("quality selected " + episode_quality)
+            logging.info(f"quality selected {episode_quality}")
         print(f"{OK}Title: {Fore.LIGHTCYAN_EX}{title}")
         print(f"{OK}Episode/s: {Fore.LIGHTCYAN_EX}{all_episodes}")
         print(f"{OK}Quality: {Fore.LIGHTCYAN_EX}{episode_quality}")
@@ -119,13 +119,9 @@ def gogodownloader(config):
                 except ValueError:
                     print(f"{ERR}Invalid input. Please try again.")
 
-        if episode_start is not None:
-            pass
-        else:
+        if episode_start is None:
             episode_start = 1
-        if episode_end is not None:
-            pass
-        else:
+        if episode_end is None:
             episode_end = all_episodes
 
         gogo = gogoanime(
@@ -147,12 +143,9 @@ def gogodownloader(config):
         if choice == "n" or episode_zero is not None:
             source = None
 
-        dl_links = []
         episode_links = gogo.get_links(source)
         print(f"{OK}Scraping Links")
-        for link in episode_links:
-            dl_links.append(gogo.get_download_link(link))
-
+        dl_links = [gogo.get_download_link(link) for link in episode_links]
         result = gogo.file_downloader(dl_links)
         if len(result.errors) > 0:
             while len(result.errors) > 0:
@@ -160,9 +153,8 @@ def gogodownloader(config):
                 episode_links = gogo.get_links(source)
                 print(f"{OK}Re-Scraping Links")
                 dl_links.clear()
-                for link in episode_links:
-                    dl_links.append(gogo.get_download_link(link))
-                result = gogo.file_downloader(dl_links, overwrite_downloads=0)
+                dl_links.extend(gogo.get_download_link(link) for link in episode_links)
+                result = gogo.file_downloader(dl_links, overwrite_downloads=False)
 
         use_again = input(f"{IN}Do you want to use the app again? (y|n) > ").lower()
         if use_again == "y":
