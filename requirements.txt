@@ -6,7 +6,7 @@ attrs==21.4.0
 beautifulsoup4==4.10.0
 black==21.12b0
 certifi==2021.10.8
-charset-normalizer==2.0.10
+charset-normalizer==2.0.1
 click==8.0.3
 colorama==0.4.4
 frozenlist==1.2.0
@@ -16,10 +16,10 @@ mypy-extensions==0.4.3
 parfive==1.5.1
 pathspec==0.9.0
 platformdirs==2.4.1
-requests==2.27.1
+requests==2.31.0
 soupsieve==2.3.1
 tomli==1.2.3
 tqdm==4.62.3
 typing-extensions==4.0.1
-urllib3==1.26.8
+urllib3==2.0.3
 yarl==1.7.2
