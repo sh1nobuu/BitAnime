@@ -36,29 +36,39 @@ def config_check():
         logging.info("Config.json loaded")
         with open("./config.json", "r") as f:
             CONFIG = json.load(f)
-        if not "GoGoAnime_Username" in CONFIG or len(CONFIG["GoGoAnime_Username"]) == 0:
-            logging.error("GoGoAnime_Username not set in config.json")
-            print("GoGoAnime_Username not set in config.json")
-            exit(0)
+        if (
+            "GoGoAnime_Username" not in CONFIG
+            or len(CONFIG["GoGoAnime_Username"]) == 0
+        ):
+            logging_error(
+                "GoGoAnime_Username not set in config.json",
+                "GoGoAnime_Username not set in config.json",
+            )
+        elif (
+            "GoGoAnime_Password" not in CONFIG
+            or len(CONFIG["GoGoAnime_Password"]) == 0
+        ):
+            logging_error(
+                "GoGoAnime_Password not set in config.json",
+                "GoGoAnime_Password not set in config.json",
+            )
         else:
-            if (
-                not "GoGoAnime_Password" in CONFIG
-                or len(CONFIG["GoGoAnime_Password"]) == 0
-            ):
-                logging.error("GoGoAnime_Password not set in config.json")
-                print("GoGoAnime_Password not set in config.json")
-                exit(0)
-            else:
-                logging.info(
-                    "Config loaded and "
-                    + CONFIG["GoGoAnime_Username"]
-                    + " username found"
-                )
-                return CONFIG
+            logging.info(
+                "Config loaded and "
+                + CONFIG["GoGoAnime_Username"]
+                + " username found"
+            )
+            return CONFIG
     else:
-        logging.error("config.json not found")
-        print("config.json file not found")
-        exit(0)
+        logging_error(
+            "config.json not found", "config.json file not found"
+        )
+
+
+def logging_error(arg0, arg1):
+    logging.error(arg0)
+    print(arg1)
+    exit(0)
 
 
 def max_concurrent_downloads(max_conn: int):
@@ -70,10 +80,7 @@ def max_concurrent_downloads(max_conn: int):
     Returns:
         [int]: Max concurrent downloads allowed
     """
-    if max_conn > 6:
-        return 6
-    else:
-        return max_conn
+    return min(max_conn, 6)
 
 
 CURRENT_DOMAIN = "film"
@@ -127,24 +134,16 @@ class gogoanime:
         soup = BeautifulSoup(page.content, "html.parser")
         loginCheck = soup(text=re.compile("Logout"))
         if len(loginCheck) == 0:
-            raise Exception(
-                "User is not logged in, make sure account has been activated"
-            )
+            raise CustomMessage.user_not_logged_in()
 
     def get_links(self, source=None):
+        source_ep = f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/{self.name}-episode-"
+        episode_links = [
+            f"{source_ep}{i}"
+            for i in range(self.episode_start, self.episode_end + 1)
+        ]
         if source is not None:
-            source_ep = f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/{self.name}-episode-"
-            episode_links = [
-                f"{source_ep}{i}"
-                for i in range(self.episode_start, self.episode_end + 1)
-            ]
             episode_links.insert(0, source)
-        else:
-            source_ep = f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/{self.name}-episode-"
-            episode_links = [
-                f"{source_ep}{i}"
-                for i in range(self.episode_start, self.episode_end + 1)
-            ]
         return episode_links
 
     def get_download_link(self, url):
@@ -156,19 +155,18 @@ class gogoanime:
         soup = BeautifulSoup(page.content, "html.parser")
         try:
             for link in soup.find_all(
-                "a", href=True, string=re.compile(self.episode_quality)
-            ):
+                            "a", href=True, string=re.compile(self.episode_quality)
+                        ):
                 return link["href"]
-            else:
-                ep_num = url.rsplit("-", 1)[1]
-                print(
-                    f"{self.episode_quality} not found for ep{ep_num} checking for next best"
-                )
-                for q in quality_arr:
-                    for link in soup.find_all("a", href=True, string=re.compile(q)):
-                        print(f"{q} found.")
-                        return link["href"]
-        except:
+            ep_num = url.rsplit("-", 1)[1]
+            print(
+                f"{self.episode_quality} not found for ep{ep_num} checking for next best"
+            )
+            for q in quality_arr:
+                for link in soup.find_all("a", href=True, string=re.compile(q)):
+                    print(f"{q} found.")
+                    return link["href"]
+        except Exception:
             print("No matching download found")
 
     def file_downloader(self, file_list: dict, overwrite_downloads: bool = None):
@@ -196,8 +194,7 @@ class gogoanime:
                     path=f"./{self.title}",
                 )
 
-        files = dl.download()
-        return files
+        return dl.download()
 
     def get_show_from_bookmark(self):
         print(f"{IN}Loading shows from bookmarks")
@@ -221,7 +218,7 @@ class gogoanime:
                 fullRow = fullRow.replace("Status ", "")
                 splitRow = fullRow.split("Latest")
             animeName = splitRow[0].strip().encode("ascii", "ignore").decode()
-            animeName = re.sub("[^A-Za-z0-9 ]+", "", animeName)
+            animeName = re.sub("[^A-Za-z\d ]+", "", animeName)
             animeDownloadName = animeName.replace(" ", "-").lower()
             episodeNum = splitRow[-1].split()[-1]
             bookmarkList.append(
@@ -260,5 +257,13 @@ class CustomMessage(Exception):
         screenlock.acquire()
         print(
             f"{OK}Trying {Fore.LIGHTCYAN_EX}{self.episode_quality}{Fore.RESET} quality for Episode {self.workingepisode}."
+        )
+        screenlock.release()
+
+    @staticmethod
+    def user_not_logged_in():
+        screenlock.acquire()
+        print(
+            f"{ERR} User is not logged in, make sure account has been activated."
         )
         screenlock.release()
