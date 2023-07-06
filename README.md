@@ -47,7 +47,7 @@ If you want to run from source, or are using Linux/Mac you can run directly from
 ## Screenshot
 
 <div align="center">
-  <img style="height:386px; width:688px;" src="https://github.com/karl0ss/GoGoDownloader/raw/master/img/screenshot.png"
+  <img style="height:386px; width:688px;" src="https://github.com/Arctic4161/BitAnime/raw/master/img/screenshot.png"
   title="BitAnime in action" alt="BitAnime Screenshot">
 </div>
 
