@@ -68,8 +68,8 @@ The anime name is separated by "-". You can either type it manually, or go to [g
 
 ##### Multiple word title
 
-- https://gogoanime.gg/category/shadows-house >> shadows-house
-- https://gogoanime.gg/category/kono-subarashii-sekai-ni-shukufuku-wo- >> kono-subarashii-sekai-ni-shukufuku-wo-
+- https://gogoanime.vet/category/shadows-house >> shadows-house
+- https://gogoanime.vet/category/kono-subarashii-sekai-ni-shukufuku-wo- >> kono-subarashii-sekai-ni-shukufuku-wo-
 
 
 # GoGoDownloader CLI
