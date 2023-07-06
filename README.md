@@ -27,7 +27,7 @@ GoGo Anime has changed the way they show download links, and this no longer work
 - Download all qualities options from GoGoAnime
 - Update the current GoGoAnime domain via config file (as they keep changing it)
 - Specify the number of concurrent downloads via config file (Max is 6)
-- Set file overwrite via config file (0 = Skip / 1 = Overwrite)
+- Set file overwrite via config file (false = Skip / true = Overwrite)
 
 ## Installation
 You have 2 options here, you can download the exe on the releases page and run on Windows
@@ -38,7 +38,7 @@ You have 2 options here, you can download the exe on the releases page and run o
 
 If you want to run from source, or are using Linux/Mac you can run directly from source doing the following - 
 
-- `git clone https://github.com/karl0ss/GoGoDownloader.git`
+- `git clone https://github.com/Arctic4161/BitAnime/.git`
 - `pip install -r requirements.txt`
 - Create config.json from config.json.default
 - Add your GoGoAnime Username and Password to config.json (Can't be a Google account)
@@ -57,14 +57,14 @@ If you want to run from source, or are using Linux/Mac you can run directly from
 
 ## Usage
 
-The anime name is separated by "-". You can either type it manually, or go to [gogoanime.gg](https://gogoanime.gg/) and search for the anime you want to download and copy the name from the URL.
+The anime name is separated by "-". You can either type it manually, or go to [gogoanime.vet](https://gogoanime.vet/) and search for the anime you want to download and copy the name from the URL.
 
 ### Examples
 
 ##### One word title
 
-- https://gogoanime.gg/category/bakemonogatari >> bakemonogatari
-- https://gogoanime.gg/category/steinsgate >> steinsgate
+- https://gogoanime.vet/category/bakemonogatari >> bakemonogatari
+- https://gogoanime.vet/category/steinsgate >> steinsgate
 
 ##### Multiple word title
 
