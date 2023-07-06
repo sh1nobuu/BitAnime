@@ -16,9 +16,9 @@
 
 ## About GoGo Downloader
 
-GoGo Downloader is based on the now broken **BitAnime**. I have had to rework quite a bit of the code to get it working again, and have ideas for some other improvements, I don't want to mess with the original codebase too much, hence **GoGo Downloader**.
+GoGo Downloader is based on the now broken **BitAnime**.
 
-**GoGo Downloader** gets its content from [gogoanime](https://gogoanime.film/). If you get a **404** error, please look up the correct anime name on [gogoanime](https://gogoanime.film/). The application will let you download all the episodes, or you can choose how many episodes you want to download.
+**GoGo Downloader** gets its content from [gogoanime](https://gogoanime.vet/). If you get a **404** error, please look up the correct anime name on [gogoanime](https://gogoanime.vet/). The application will let you download all the episodes, or you can choose how many episodes you want to download.
 
 GoGo Anime has changed the way they show download links, and this no longer works via BS4, as the recaptcha blocks the links, but if you are logged in, there are other routes to get to download links, I have taken one of these routes to restore the application.
 
@@ -73,4 +73,4 @@ The anime name is separated by "-". You can either type it manually, or go to [g
 
 
 # GoGoDownloader CLI
-I have now also created the GoGoDownloader CLI, this tool can be used to run on a scheduled basis, it will login and get the latest episodes from your GoGoAnime bookmarks, and download the latest episode if it has not been downloaded yet.
+Karl0ss also created the GoGoDownloader CLI, this tool can be used to run on a scheduled basis, it will login and get the latest episodes from your GoGoAnime bookmarks, and download the latest episode if it has not been downloaded yet.
