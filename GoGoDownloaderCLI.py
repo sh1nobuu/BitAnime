@@ -1,7 +1,4 @@
-import json
 import io
-import os
-import re
 from backend import *
 
 
@@ -79,7 +76,7 @@ def main():
     config = config_check()
     downloader = gogoanime(
         config,
-        1,
+        "1",
         config["CLIQuality"],
         "a",
         1,
@@ -118,7 +115,7 @@ def main():
                     ep["showName"],
                     ep["latestEpisode"],
                 )
-            result = downloader.file_downloader(dl_links, overwrite_downloads=0)
+            result = downloader.file_downloader(dl_links, overwrite_downloads=False)
             if config["CleanUpFileName"]:
                 for file in result.data:
                     renameFile(file)
