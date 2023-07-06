@@ -73,4 +73,4 @@ The anime name is separated by "-". You can either type it manually, or go to [g
 
 
 # GoGoDownloader CLI
-Karl0ss also created the GoGoDownloader CLI, this tool can be used to run on a scheduled basis, it will login and get the latest episodes from your GoGoAnime bookmarks, and download the latest episode if it has not been downloaded yet.
+@Karl0ss also created the GoGoDownloader CLI, this tool can be used to run on a scheduled basis, it will login and get the latest episodes from your GoGoAnime bookmarks, and download the latest episode if it has not been downloaded yet.
