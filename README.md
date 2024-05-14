@@ -18,7 +18,7 @@
 
 GoGo Downloader is based on the now broken **BitAnime**.
 
-**GoGo Downloader** gets its content from [gogoanime](https://gogoanime.vet/). If you get a **404** error, please look up the correct anime name on [gogoanime](https://gogoanime.vet/). The application will let you download all the episodes, or you can choose how many episodes you want to download.
+**GoGo Downloader** gets its content from [gogoanime](https://gogoanime3.co/). If you get a **404** error, please look up the correct anime name on [gogoanime](https://gogoanime3.co/). The application will let you download all the episodes, or you can choose how many episodes you want to download.
 
 GoGo Anime has changed the way they show download links, and this no longer works via BS4, as the recaptcha blocks the links, but if you are logged in, there are other routes to get to download links, I have taken one of these routes to restore the application.
 
@@ -57,19 +57,19 @@ If you want to run from source, or are using Linux/Mac you can run directly from
 
 ## Usage
 
-The anime name is separated by "-". You can either type it manually, or go to [gogoanime.vet](https://gogoanime.vet/) and search for the anime you want to download and copy the name from the URL.
+The anime name is separated by "-". You can either type it manually, or go to [gogoanime3.co](https://gogoanime3.co/) and search for the anime you want to download and copy the name from the URL.
 
 ### Examples
 
 ##### One word title
 
-- https://gogoanime.vet/category/bakemonogatari >> bakemonogatari
-- https://gogoanime.vet/category/steinsgate >> steinsgate
+- https://gogoanime3.co/category/bakemonogatari >> bakemonogatari
+- https:/gogoanime3.co/category/steinsgate >> steinsgate
 
 ##### Multiple word title
 
-- https://gogoanime.vet/category/shadows-house >> shadows-house
-- https://gogoanime.vet/category/kono-subarashii-sekai-ni-shukufuku-wo- >> kono-subarashii-sekai-ni-shukufuku-wo-
+- https://gogoanime3.co/category/shadows-house >> shadows-house
+- https://gogoanime3.co/category/kono-subarashii-sekai-ni-shukufuku-wo- >> kono-subarashii-sekai-ni-shukufuku-wo-
 
 
 # GoGoDownloader CLI
