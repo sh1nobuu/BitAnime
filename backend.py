@@ -101,18 +101,18 @@ class gogoanime:
     def get_gogoanime_auth_cookie(self):
         session = requests.session()
         page = session.get(
-            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/login.html"
+            f"https://{self.config['CurrentGoGoAnimeDomain']}/login.html"
         )
         soup = BeautifulSoup(page.content, "html.parser")
         meta_path = soup.select('meta[name="csrf-token"]')
         csrf_token = meta_path[0].attrs["content"]
 
-        url = f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/login.html"
+        url = f"https://{self.config['CurrentGoGoAnimeDomain']}/login.html"
         payload = f"email={self.config['GoGoAnime_Username']}&password={self.config['GoGoAnime_Password']}&_csrf={csrf_token}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "authority": "gogo-cdn.com",
-            "referer": f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/",
+            "referer": f"https://{self.config['CurrentGoGoAnimeDomain']}/",
             "content-type": "application/x-www-form-urlencoded",
         }
         session.headers = headers
@@ -128,7 +128,7 @@ class gogoanime:
         self,
     ):
         page = requests.get(
-            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/one-piece-episode-1",
+            f"https://{self.config['CurrentGoGoAnimeDomain']}/one-piece-episode-1",
             cookies=dict(auth=gogoanime.get_gogoanime_auth_cookie(self)),
         )
         soup = BeautifulSoup(page.content, "html.parser")
@@ -137,7 +137,7 @@ class gogoanime:
             raise CustomMessage.user_not_logged_in()
 
     def get_links(self, source=None):
-        source_ep = f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/{self.name}-episode-"
+        source_ep = f"https://{self.config['CurrentGoGoAnimeDomain']}/{self.name}-episode-"
         episode_links = [
             f"{source_ep}{i}"
             for i in range(self.episode_start, self.episode_end + 1)
@@ -201,7 +201,7 @@ class gogoanime:
         bookmarkList = []
         a = dict(auth=gogoanime.get_gogoanime_auth_cookie(self))
         resp = requests.get(
-            f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/user/bookmark",
+            f"https://{self.config['CurrentGoGoAnimeDomain']}/user/bookmark",
             cookies=a,
         )
         soup = BeautifulSoup(resp.text, "html.parser")
@@ -225,7 +225,7 @@ class gogoanime:
                 {
                     "showName": animeName,
                     "latestEpisode": int(episodeNum),
-                    "downloadURL": f"https://gogoanime.{self.config['CurrentGoGoAnimeDomain']}/{animeDownloadName}-episode-{str(episodeNum)}",
+                    "downloadURL": f"https://{self.config['CurrentGoGoAnimeDomain']}/{animeDownloadName}-episode-{str(episodeNum)}",
                 }
             )
         with open("bookmarkList.json", "w") as f:
