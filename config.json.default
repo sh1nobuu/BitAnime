@@ -2,7 +2,7 @@
     "GoGoAnime_Username":"",
     "GoGoAnime_Password":"",
     "MaxConcurrentDownloads": 4,
-    "CurrentGoGoAnimeDomain": "vet",
+    "CurrentGoGoAnimeDomain": "gogoanime3.co",
     "OverwriteDownloads": false,
     "CLIQuality":"720",
     "CLIDownloadLocation": "CLIOutput",
